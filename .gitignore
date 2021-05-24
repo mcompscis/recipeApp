@@ -1,0 +1,4 @@
+recipeApp/db_credentials.json
+recipeApp/__pycache__/
+recipe_app/__pycache__/
+recipe_app/migrations/__pycache__/
