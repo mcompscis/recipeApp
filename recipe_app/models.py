@@ -1,13 +1,11 @@
 from django.db import models
 from datetime import datetime
 
-# Create your models here.
 
-class Tutorial(models.Model):
-    tutorial_title = models.CharField(max_length=200)
-    tutorial_content = models.TextField()
-    tutorial_published = models.DateTimeField("date published", default=datetime.now())
+class SampleTable(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
 
-    def str(self):
-        return self.tutorial_title
-
+    class Meta:
+        managed = False
+        db_table = 'sample_table'
