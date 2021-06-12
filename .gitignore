@@ -2,3 +2,5 @@
 /app/recipeApp/__pycache__/
 /app/recipe_app/__pycache__/
 /app/recipe_app/migrations/__pycache__/
+Jupyter Notebooks/
+food_data/
