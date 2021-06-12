@@ -16,12 +16,14 @@ const App = () => {
 					<Route
 						path="/"
 						exact
+						component={() => <HomePage />}
+					/>
+					<Route
+						path="/recipes"
+						exact
 						component={() => <RecipeList />}
 					/>
-					{/* <Route path="/intro">
-						<Intro />
-					</Route>
-					<Route path="/intro">
+					{/*<Route path="/intro">
 						<Intro />
 					</Route>
 					<Route path="/intro">

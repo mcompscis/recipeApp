@@ -1,11 +1,12 @@
 import React from 'react';
-import List from '@material-ui/core/List';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { Button, List, Grid, Typography } from '@material-ui/core'
 import RecipeItem from './RecipeItem';
 import { recipes, users } from '../sampleData/sample'
+import { useHistory } from 'react-router-dom';
 
 const RecipeList = () => {
+	const history = useHistory();
+
 	return (
 		<div>
 			<Grid container spacing={2}>
@@ -27,6 +28,10 @@ const RecipeList = () => {
 					</div>
 				</Grid>
 			</Grid>
+			<div>
+				<Button variant="contained">Create Recipe</Button>
+				<Button variant="contained" onClick={() => history.push('/')}>Go Back</Button>
+			</div>
 		</div>
 	);
 };
