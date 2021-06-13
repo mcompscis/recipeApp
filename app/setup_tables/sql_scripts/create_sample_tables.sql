@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS SampleIngredient (
 
 CREATE TABLE IF NOT EXISTS SampleTag (
     tag_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    text TEXT NOT NULL
+    tag_text TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS SampleRecipeIngredients (
