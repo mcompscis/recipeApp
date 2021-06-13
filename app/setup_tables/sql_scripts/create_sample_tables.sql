@@ -13,11 +13,11 @@ CREATE TABLE IF NOT EXISTS SampleCuisine (
 
 CREATE TABLE IF NOT EXISTS SampleRecipe (
     recipe_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    creator_id INT NOT NULL REFERENCES User(user_id),
+    creator_id INT NOT NULL REFERENCES SampleUser(user_id),
     recipe_name VARCHAR(255) NOT NULL,
     serves INT NOT NULL,
     date_submitted DATE NOT NULL,
-    cuisine_id VARCHAR(255) REFERENCES Cuisine(cuisine_id),
+    cuisine_id VARCHAR(255) REFERENCES SampleCuisine(cuisine_id),
     description TEXT,
     calories INT,
     avg_rating DECIMAL(3, 2),
@@ -37,22 +37,22 @@ CREATE TABLE IF NOT EXISTS SampleTag (
 );
 
 CREATE TABLE IF NOT EXISTS SampleRecipeIngredients (
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
-    ingredient_id INT NOT NULL REFERENCES Ingredient(ingredient_id),
+    recipe_id INT NOT NULL REFERENCES SampleRecipe(recipe_id),
+    ingredient_id INT NOT NULL REFERENCES SampleIngredient(ingredient_id),
     quantity INT NOT NULL,
     measurement_type VARCHAR(255) NOT NULL,
     PRIMARY KEY(recipe_id, ingredient_id)
 );
 
 CREATE TABLE IF NOT EXISTS SampleRecipeTag (
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
-    tag_id INT NOT NULL REFERENCES Tag(tag_id),
+    recipe_id INT NOT NULL REFERENCES SampleRecipe(recipe_id),
+    tag_id INT NOT NULL REFERENCES SampleTag(tag_id),
     PRIMARY KEY(recipe_id, tag_id)
 );
 
 CREATE TABLE IF NOT EXISTS SampleInteractions(
-    user_id INT NOT NULL REFERENCES User(user_id),
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
+    user_id INT NOT NULL REFERENCES SampleUser(user_id),
+    recipe_id INT NOT NULL REFERENCES SampleRecipe(recipe_id),
     interaction_date DATE NOT NULL,
     rating DECIMAL(3, 2),
     review TEXT,
