@@ -22,6 +22,7 @@ const RecipeItem = ({ name, average_rating, userid }) => {
                 secondary={null}
             />
             <ListItemSecondaryAction>
+                <Button variant="contained">Edit</Button>
                 <Button variant="contained">Delete</Button>
             </ListItemSecondaryAction>
         </ListItem>
