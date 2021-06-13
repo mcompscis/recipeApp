@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS User (
     username VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
+    num_ratings_received INT NOT NULL,
     num_recipes_created INT NOT NULL
 );
 

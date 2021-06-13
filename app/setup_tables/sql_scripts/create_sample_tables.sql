@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS SampleUser (
     username VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
+    num_ratings_received INT NOT NULL,
     num_recipes_created INT NOT NULL
 );
 
@@ -66,3 +67,6 @@ CREATE TABLE IF NOT EXISTS SampleInteraction (
     FOREIGN KEY (user_id) REFERENCES SampleUser(user_id),
     FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id)
 );
+
+CREATE TRIGGER UpdateRecipeInfo AFTER INSERT ON SampleInteraction FOR EACH ROW BEGIN DECLARE recipe_creator_id integer; SET recipe_creator_id = (SELECT creator_id FROM SampleRecipe R WHERE R.recipe_id = NEW.recipe_id); UPDATE SampleRecipe R SET avg_rating = CASE WHEN avg_rating IS NULL THEN NEW.rating ELSE (((avg_rating * num_ratings) + NEW.rating) / (num_ratings + 1)) END WHERE (R.recipe_id =  NEW.recipe_id); UPDATE SampleRecipe R SET num_ratings = num_ratings + 1 WHERE R.recipe_id =  NEW.recipe_id; UPDATE SampleUser U SET num_ratings_received = num_ratings_received + 1 WHERE user_id = recipe_creator_id; UPDATE SampleUser U SET avg_recipe_rating = CASE WHEN avg_recipe_rating IS NULL THEN NEW.rating ELSE ((avg_recipe_rating * (num_ratings_received - 1)) + NEW.rating) / (num_ratings_received) END WHERE U.user_id = recipe_creator_id; END
+
