@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS User (
-    user_id INT NOT NULL PRIMARY KEY,
+    user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
@@ -7,12 +7,12 @@ CREATE TABLE IF NOT EXISTS User (
 );
 
 CREATE TABLE IF NOT EXISTS Cuisine (
-    cuisine_id INT NOT NULL PRIMARY KEY,
+    cuisine_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cuisine_name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Recipe (
-    recipe_id INT NOT NULL PRIMARY KEY,
+    recipe_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     creator_id INT NOT NULL REFERENCES User(user_id),
     recipe_name VARCHAR(255) NOT NULL,
     serves INT NOT NULL,
@@ -27,12 +27,12 @@ CREATE TABLE IF NOT EXISTS Recipe (
 );
 
 CREATE TABLE IF NOT EXISTS Ingredient (
-    ingredient_id INT NOT NULL PRIMARY KEY,
+    ingredient_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     ingredient_name TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Tag (
-    tag_id INT NOT NULL PRIMARY KEY,
+    tag_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     text TEXT NOT NULL
 );
 
@@ -54,7 +54,10 @@ CREATE TABLE IF NOT EXISTS Interactions(
     user_id INT NOT NULL REFERENCES User(user_id),
     recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
     interaction_date DATE NOT NULL,
-    rating  DECIMAL(3, 2),
+    rating DECIMAL(3, 2),
     review TEXT,
     PRIMARY KEY(user_id, recipe_id)
 );
+
+
+-- TODO: Setup ON DELETE CASCADE etc. 
