@@ -47,7 +47,7 @@ VALUES
 ('PG-13');
 
 INSERT INTO 
-SampleRecipeIngredients(recipe_id,ingredient_id,quantity,measurement_type)
+SampleRecipeIngredient(recipe_id,ingredient_id,quantity,measurement_type)
 VALUES
 (1,1,2,'cups'),
 (1,2,2,'kg'),
@@ -78,7 +78,7 @@ VALUES
 (3,5),
 (5,1);
 
-INSERT INTO SampleInteractions(user_id,recipe_id,interaction_date,rating,review)
+INSERT INTO SampleInteraction(user_id,recipe_id,interaction_date,rating,review)
 VALUES
 (5,1,'2020-12-6',5,'spicy'),
 (3,2,'2020-12-7',1,'recipe GONE WRONG! (COPS CALLED)'),
