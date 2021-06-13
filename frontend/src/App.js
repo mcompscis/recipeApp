@@ -6,7 +6,7 @@ import {
 	Route
 } from "react-router-dom";
 import HomePage from './components/HomePage';
-import RecipeList from './components/RecipeList';
+import RecipeTable from './components/RecipeTable';
 
 const App = () => {
 	return (
@@ -21,7 +21,7 @@ const App = () => {
 					<Route
 						path="/recipes"
 						exact
-						component={() => <RecipeList />}
+						component={() => <RecipeTable />}
 					/>
 					{/*<Route path="/intro">
 						<Intro />

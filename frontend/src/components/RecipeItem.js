@@ -7,6 +7,8 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button } from '@material-ui/core';
 
 const RecipeItem = ({ name, average_rating, userid }) => {
+    const editing = false;
+    
 	return (
         <ListItem>
             <ListItemText
