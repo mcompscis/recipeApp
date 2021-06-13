@@ -13,17 +13,19 @@ CREATE TABLE IF NOT EXISTS Cuisine (
 
 CREATE TABLE IF NOT EXISTS Recipe (
     recipe_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    creator_id INT NOT NULL REFERENCES User(user_id),
+    creator_id INT NOT NULL, 
     recipe_name VARCHAR(255) NOT NULL,
     serves INT NOT NULL,
     date_submitted DATE NOT NULL,
-    cuisine_id VARCHAR(255) REFERENCES Cuisine(cuisine_id),
+    cuisine_id INT,
     description TEXT,
     calories INT,
     avg_rating DECIMAL(3, 2),
     time_to_prepare INT,
     num_ratings INT NOT NULL,
-    img_url TEXT
+    img_url TEXT,
+    FOREIGN KEY (creator_id) REFERENCES User(user_id),
+    FOREIGN KEY (cuisine_id) REFERENCES Cuisine(cuisine_id)
 );
 
 CREATE TABLE IF NOT EXISTS Ingredient (
@@ -36,28 +38,31 @@ CREATE TABLE IF NOT EXISTS Tag (
     tag_text TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS RecipeIngredients (
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
-    ingredient_id INT NOT NULL REFERENCES Ingredient(ingredient_id),
-    quantity DECIMAL(6, 2)  NOT NULL,
+CREATE TABLE IF NOT EXISTS RecipeIngredient (
+    recipe_id INT NOT NULL,
+    ingredient_id INT NOT NULL, 
+    quantity INT NOT NULL,
     measurement_type VARCHAR(255) NOT NULL,
-    PRIMARY KEY(recipe_id, ingredient_id)
+    PRIMARY KEY(recipe_id, ingredient_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id),
+    FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id)
 );
 
 CREATE TABLE IF NOT EXISTS RecipeTag (
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
-    tag_id INT NOT NULL REFERENCES Tag(tag_id),
-    PRIMARY KEY(recipe_id, tag_id)
+    recipe_id INT NOT NULL ,
+    tag_id INT NOT NULL,
+    PRIMARY KEY(recipe_id, tag_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id),
+    FOREIGN KEY (tag_id) REFERENCES Tag(tag_id)
 );
 
-CREATE TABLE IF NOT EXISTS Interactions(
-    user_id INT NOT NULL REFERENCES User(user_id),
-    recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
+CREATE TABLE IF NOT EXISTS Interaction (
+    user_id INT NOT NULL,
+    recipe_id INT NOT NULL,
     interaction_date DATE NOT NULL,
     rating DECIMAL(3, 2),
     review TEXT,
-    PRIMARY KEY(user_id, recipe_id)
+    PRIMARY KEY(user_id, recipe_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id)
 );
-
-
--- TODO: Setup ON DELETE CASCADE etc. 

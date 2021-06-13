@@ -27,11 +27,11 @@ if __name__ == "__main__":
 
     with open(f'sql_scripts/populate_{args.table_type}_tables.sql', 'r') as sql_file:
 
-        result_iterator = cursor.execute(sql_file.read(), multi=True)           
+        result_iterator = cursor.execute(sql_file.read(), multi=True)
         for result in result_iterator:
-            connection.commit()
             print("Running query: ", result)
             print(f"Affected {result.rowcount} rows")
 
+    connection.commit()
     cursor.close()
     connection.close()
