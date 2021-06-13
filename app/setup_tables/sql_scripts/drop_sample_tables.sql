@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS SampleUser;
+DROP TABLE IF EXISTS SampleRecipe;
+DROP TABLE IF EXISTS SampleIngredient;
+DROP TABLE IF EXISTS SampleTag;
+DROP TABLE IF EXISTS SampleInteractions;
+DROP TABLE IF EXISTS SampleRecipeIngredients;
+DROP TABLE IF EXISTS SampleRecipeTag;
+DROP TABLE IF EXISTS SampleCuisine;
