@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Tag (
 CREATE TABLE IF NOT EXISTS RecipeIngredients (
     recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
     ingredient_id INT NOT NULL REFERENCES Ingredient(ingredient_id),
-    quantity INT NOT NULL,
+    quantity DECIMAL(6, 2)  NOT NULL,
     measurement_type VARCHAR(255) NOT NULL,
     PRIMARY KEY(recipe_id, ingredient_id)
 );
