@@ -1,19 +1,17 @@
-CREATE TABLE User
-(
+CREATE TABLE IF NOT EXISTS User (
     user_id INT NOT NULL PRIMARY KEY,
     username VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
-    num_recipes_created INT NOT NULL,
+    num_recipes_created INT NOT NULL
 );
 
-CREATE TABLE Cuisine 
-(
+CREATE TABLE IF NOT EXISTS Cuisine (
     cuisine_id INT NOT NULL PRIMARY KEY,
     cuisine_name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Recipe (
+CREATE TABLE IF NOT EXISTS Recipe (
     recipe_id INT NOT NULL PRIMARY KEY,
     creator_id INT NOT NULL REFERENCES User(user_id),
     recipe_name VARCHAR(255) NOT NULL,
@@ -28,17 +26,17 @@ CREATE TABLE Recipe (
     img_url TEXT
 );
 
-CREATE TABLE Ingredient (
+CREATE TABLE IF NOT EXISTS Ingredient (
     ingredient_id INT NOT NULL PRIMARY KEY,
     ingredient_name TEXT NOT NULL
 );
 
-CREATE TABLE Tag (
+CREATE TABLE IF NOT EXISTS Tag (
     tag_id INT NOT NULL PRIMARY KEY,
     text TEXT NOT NULL
 );
 
-CREATE TABLE RecipeIngredients (
+CREATE TABLE IF NOT EXISTS RecipeIngredients (
     recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
     ingredient_id INT NOT NULL REFERENCES Ingredient(ingredient_id),
     quantity INT NOT NULL,
@@ -46,13 +44,13 @@ CREATE TABLE RecipeIngredients (
     PRIMARY KEY(recipe_id, ingredient_id)
 );
 
-CREATE TABLE RecipeTag (
+CREATE TABLE IF NOT EXISTS RecipeTag (
     recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
     tag_id INT NOT NULL REFERENCES Tag(tag_id),
     PRIMARY KEY(recipe_id, tag_id)
 );
 
-CREATE TABLE Interactions (
+CREATE TABLE IF NOT EXISTS Interactions(
     user_id INT NOT NULL REFERENCES User(user_id),
     recipe_id INT NOT NULL REFERENCES Recipe(recipe_id),
     interaction_date DATE NOT NULL,
@@ -60,6 +58,3 @@ CREATE TABLE Interactions (
     review TEXT,
     PRIMARY KEY(user_id, recipe_id)
 );
-
-
-
