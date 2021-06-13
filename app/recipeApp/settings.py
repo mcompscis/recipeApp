@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'recipes',
     'recipe_app.apps.RecipeAppConfig',
+    'frontend'
 ]
 
 MIDDLEWARE = [
