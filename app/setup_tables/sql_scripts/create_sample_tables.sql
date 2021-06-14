@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS SampleRecipe (
     date_submitted DATE NOT NULL,
     cuisine_id INT,
     description TEXT,
+    recipe_text TEXT NOT NULL,
     calories INT,
     avg_rating DECIMAL(3, 2),
     time_to_prepare INT,
