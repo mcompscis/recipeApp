@@ -1,7 +1,7 @@
 -- This query returns all data associated with a specific recipe across the SampleRecipe table, SampleCuisine table, SampleRecipeTag table and SampleRecipeIngredient table, 
 -- for a specific recipe id.
 
--- Here it is assumed that '2' refers to the recipe ID for which we want all the data
+-- Here it is assumed that '%s' refers to the recipe ID for which we want all of the data
 -- GROUP_CONCAT() is used to gather all ingredients/tags into comma separated strings
 
 
