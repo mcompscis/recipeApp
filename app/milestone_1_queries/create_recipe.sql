@@ -5,7 +5,7 @@
 --      creating new tags (if any) in SampleTag
 --      Adding recipe-tag tuples to SampleRecipeTag
 
-SET @cuisineID = SELECT cuisine_id FROM SampleCuisine WHERE cuisine_name = 'Indian'
+SET @cuisineID = SELECT cuisine_id FROM SampleCuisine WHERE cuisine_name = 'Indian';
 
 INSERT INTO SampleRecipe(creator_id,recipe_name,serves,date_submitted,cuisine_id,description,recipe_text,calories,time_to_prepare,img_url)
 VALUES(2,'Palak Paneer',1,'2020-01-02',@cuisineID,'green paneer dish','recipe_here',350,50,'https://www.mineralpro.com/assets/uploads/2015/09/bigstock-Washing-Colorful-Fruits-And-Ve-39688621.jpg');
