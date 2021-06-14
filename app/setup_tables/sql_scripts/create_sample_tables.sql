@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS SampleRecipe (
     time_to_prepare INT,
     num_ratings INT NOT NULL DEFAULT 0,
     img_url TEXT,
-    FOREIGN KEY (creator_id) REFERENCES SampleUser(user_id),
-    FOREIGN KEY (cuisine_id) REFERENCES SampleCuisine(cuisine_id)
+    FOREIGN KEY (creator_id) REFERENCES SampleUser(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (cuisine_id) REFERENCES SampleCuisine(cuisine_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS SampleIngredient (
@@ -46,16 +46,16 @@ CREATE TABLE IF NOT EXISTS SampleRecipeIngredient (
     quantity INT NOT NULL,
     measurement_type VARCHAR(255) NOT NULL,
     PRIMARY KEY(recipe_id, ingredient_id),
-    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id),
-    FOREIGN KEY (ingredient_id) REFERENCES SampleIngredient(ingredient_id)
+    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_id) REFERENCES SampleIngredient(ingredient_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS SampleRecipeTag (
     recipe_id INT NOT NULL ,
     tag_id INT NOT NULL,
     PRIMARY KEY(recipe_id, tag_id),
-    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id),
-    FOREIGN KEY (tag_id) REFERENCES SampleTag(tag_id)
+    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES SampleTag(tag_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS SampleInteraction (
@@ -65,8 +65,8 @@ CREATE TABLE IF NOT EXISTS SampleInteraction (
     rating DECIMAL(3, 2),
     review TEXT,
     PRIMARY KEY(user_id, recipe_id),
-    FOREIGN KEY (user_id) REFERENCES SampleUser(user_id),
-    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id)
+    FOREIGN KEY (user_id) REFERENCES SampleUser(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id) ON DELETE CASCADE 
 );
 
 CREATE TRIGGER UpdateNumRecipesCreated AFTER INSERT ON SampleRecipe 
