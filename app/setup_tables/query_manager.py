@@ -8,7 +8,7 @@ def exec_query(query, params = []):
     db_creds = get_db_creds()
     connection = connect(**db_creds)
     cursor = connection.cursor()
-    
+
     if len(params):
         cursor.execute(query, params)
     else:

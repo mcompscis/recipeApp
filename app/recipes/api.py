@@ -18,14 +18,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'milestone_1_queries/get_top_recipes.sql'))
         with open(queryPath, 'r') as file:
            queryText = file.read()
-           serializer = self.get_serializer()
         return Response(exec_query(queryText))
     
     def create(self, request):
         return Response({"hello": "yes12345678"})
 
     def retrieve(self, request, pk=None):
-        return Response({"hello": "RETRIEVE"})
+        queryPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'milestone_1_queries/return_specific_recipe_info.sql'))
+        with open(queryPath, 'r') as file:
+           queryText = file.read()
+        return Response(exec_query(queryText, [pk]))
 
     def update(self, request, pk=None):
         return Response({"hello": "UPDATE"})
