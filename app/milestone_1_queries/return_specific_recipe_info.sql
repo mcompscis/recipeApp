@@ -11,7 +11,7 @@ C.cuisine_name, R.description, R.recipe_text, R.calories, R.avg_rating,
  GROUP_CONCAT(measurement_type) AS measurement_types
 FROM
 SampleRecipe R, SampleRecipeIngredient RI, SampleIngredient I, SampleCuisine C
-WHERE (R.recipe_id = 2) AND (R.recipe_id = RI.recipe_id) AND (RI.ingredient_id = I.ingredient_id)
+WHERE (R.recipe_id = (%s)) AND (R.recipe_id = RI.recipe_id) AND (RI.ingredient_id = I.ingredient_id)
 AND (R.cuisine_id = C.cuisine_id)
 GROUP BY C.cuisine_name, R.description, R.recipe_text, R.calories, R.avg_rating,
  R.time_to_prepare, R.num_ratings, R.img_url) T1,
