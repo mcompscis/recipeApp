@@ -1,3 +1,10 @@
+-- This query returns all data associated with a specific recipe across the SampleRecipe table, SampleCuisine table, SampleRecipeTag table and SampleRecipeIngredient table, 
+-- for a specific recipe id.
+
+-- Here it is assumed that '2' refers to the recipe ID for which we want all the data
+-- GROUP_CONCAT() is used to gather all ingredients/tags into comma separated strings
+
+
 SELECT T1.recipe_id, T1.recipe_name, T1.serves, T1.date_submitted, 
 T1.cuisine_name, T1.description, T1.recipe_text, T1.calories, T1.avg_rating,
 T1.time_to_prepare, T1.num_ratings, T1.img_url, T1.ingredients,

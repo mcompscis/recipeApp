@@ -1,3 +1,8 @@
+-- This query filters the list of recipes in SampleRecipe based on cuisine and tag 
+
+-- It is assumed in the query below that the user wants to filter for recipes that are 'spicy' and belong to the 'Indian' cuisine
+
+
 SELECT recipe_id, recipe_name, avg_rating
 FROM (
 	SELECT tag_text AS tag, sr.recipe_id AS recipe_id, recipe_name, avg_rating, cuisine_name

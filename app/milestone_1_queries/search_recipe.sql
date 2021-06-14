@@ -1,3 +1,9 @@
+-- This query filters the SampleRecipe table such that only entries with specified ingredients and those without the specified allergens will be returned 
+-- The HAVING clause will be modified by the backend to include all filters
+
+
+-- The query below assumes that the user wants to filter the recipe list based on ingredients like 'chicken' and 'chilli powder'
+-- and wants to avoid the ingredient 'paneer'
 SELECT R.recipe_id, R.recipe_name, GROUP_CONCAT(ingredient_name) AS "ingredients" FROM
 SampleRecipe R, SampleRecipeIngredient RI,
 SampleIngredient I
