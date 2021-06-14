@@ -1,6 +1,7 @@
 
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import recipeService from '../actions/recipes'
 
 /*
 class App extends Component {
@@ -22,6 +23,14 @@ import HomePage from './components/HomePage';
 import RecipeTable from './components/RecipeTable';
 
 const App = () => {
+    
+    const [recipes, setRecipes] = useState([])
+    useEffect(() => {
+        recipeService.getRecipes().then(recipes =>
+          setRecipes( recipes )
+        )  
+      }, [])
+    console.log(recipes)
 	return (
 		<Router>
 			<div className="App">
@@ -34,14 +43,15 @@ const App = () => {
 					<Route
 						path="/recipes"
 						exact
-						component={() => <RecipeTable />}
+						component={() => <RecipeTable recipesL={recipes}/>}
 					/>
 					{/*<Route path="/intro">
 						<Intro />
 					</Route>
 					<Route path="/intro">
 						<Intro />
-					</Route> */}
+                    </Route>*/ }
+                    
 				</Switch>
 			</div>
 		</Router>

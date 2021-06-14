@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Component, Fragment, useState, useEffect } from 'react';
 import { Button, List, Grid, Typography } from '@material-ui/core'
 import RecipeItem from './RecipeItem';
-import { recipes, users } from '../sampleData/sample'
+//import { recipes, users } from '../sampleData/sample'
 import { useHistory } from 'react-router-dom';
 
-const RecipeList = () => {
+import recipeService from '../../actions/recipes'
+
+const RecipeList = ({recipes}) => {
 	const history = useHistory();
 
 	return (
@@ -18,10 +20,10 @@ const RecipeList = () => {
 						<List>
 							{recipes.map((rec) => (
 								<RecipeItem
-									key={rec.id}
-									name={rec.name}
-									average_rating={rec.average_rating}
-									userid={rec.userid} 
+									key={rec.recipe_id}
+									name={rec.recipe_name}
+									average_rating={rec.avg_rating}
+									userid={rec.creator_id} 
 								/>
 							))}
 						</List>
