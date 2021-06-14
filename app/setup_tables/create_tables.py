@@ -23,6 +23,7 @@ if __name__ == "__main__":
     cursor = connection.cursor()
 
     with open(f'sql_scripts/create_{args.table_type}_tables.sql', 'r') as sql_file:
+        # TODO: Add postprocessing for Trigger statement to allow delimiters
         result_iterator = cursor.execute(sql_file.read(), multi=True)
         for result in result_iterator:
             print("Running query: ", result)
