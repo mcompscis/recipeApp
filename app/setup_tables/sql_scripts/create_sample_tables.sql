@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS SampleUser (
     username VARCHAR(255) NOT NULL,
     hashed_password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
-    num_ratings_received INT NOT NULL,
-    num_recipes_created INT NOT NULL
+    num_ratings_received INT NOT NULL DEFAULT 0,
+    num_recipes_created INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS SampleCuisine (
@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS SampleRecipe (
     description TEXT,
     recipe_text TEXT NOT NULL,
     calories INT,
-    avg_rating DECIMAL(3, 2),
+    avg_rating DECIMAL(3, 2) DEFAULT NULL,
     time_to_prepare INT,
-    num_ratings INT NOT NULL,
+    num_ratings INT NOT NULL DEFAULT 0,
     img_url TEXT,
     FOREIGN KEY (creator_id) REFERENCES SampleUser(user_id),
     FOREIGN KEY (cuisine_id) REFERENCES SampleCuisine(cuisine_id)
