@@ -21,7 +21,7 @@ const RecipeList = () => {
 									key={rec.id}
 									name={rec.name}
 									average_rating={rec.average_rating}
-									userid={rec.userid}
+									userid={rec.userid} 
 								/>
 							))}
 						</List>
