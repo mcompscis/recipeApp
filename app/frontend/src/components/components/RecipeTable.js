@@ -18,10 +18,10 @@ import TextField from '@material-ui/core/TextField';
 import _ from "lodash";
 
 
-const RecipeTable = () => {
+const RecipeTable = ({recipesL}) => {
 
 	const history = useHistory();
-	const [recipesList, setRecipesList] = useState(recipes);
+	const [recipesList, setRecipesList] = useState(recipesL);
 	const [openCreate, setOpenCreate] = useState(false);
 	const [openEdit, setOpenEdit] = useState(false);
 	const [newRecipeName, setNewRecipeName] = useState(null);
@@ -57,7 +57,7 @@ const RecipeTable = () => {
 	};
 
 	const setEditDialog = (recipeId) => {
-		const modifiedRecipeId = recipesList.findIndex((recipe) => recipe.id === recipeId);
+		const modifiedRecipeId = recipesList.findIndex((recipe) => recipe.recipe_id === recipeId);
 		const modifiedRecipe = recipesList[modifiedRecipeId];
 		setNewRecipeName(modifiedRecipe.name);
 		setNewRecipeAvgRating(modifiedRecipe.average_rating);
@@ -70,11 +70,11 @@ const RecipeTable = () => {
 		const tempRecipesList = [...recipesList];
 		const oldRecipe = tempRecipesList[currentRecipeId];
 		const newRecipe = {
-			id: oldRecipe.id,
-			name: newRecipeName ?? oldRecipe.name,
+			id: oldRecipe.recipe_id,
+			name: newRecipeName ?? oldRecipe.recipe_name,
 			image_url: "tempurl",
-			average_rating: newRecipeAvgRating ?? oldRecipe.average_rating,
-			userid: newRecipeUserId ?? oldRecipe.userid
+			average_rating: newRecipeAvgRating ?? oldRecipe.avg_rating,
+			userid: newRecipeUserId ?? oldRecipe.creator_id
 		};
 		tempRecipesList[currentRecipeId] = newRecipe;
 		console.log('Edited item', newRecipe);
@@ -118,13 +118,13 @@ const RecipeTable = () => {
 	};
 
 	const removeItem = (itemId) => {
-		const tempRecipesList = recipesList.filter((item) => item.id !== itemId);
+		const tempRecipesList = recipesList.filter((item) => item.recipe_id !== itemId);
 		console.log('Removed item', itemId);
 		setRecipesList(tempRecipesList);
 	};
 
 	useEffect(() => {
-		const intialCount = recipes.length + 1;
+		const intialCount = recipesL.length + 1;
 		setRecipeIdCounter(intialCount);
 	}, [])
 
@@ -142,16 +142,16 @@ const RecipeTable = () => {
 					</TableHead>
 					<TableBody>
 						{recipesList.map((rec) => (
-							<TableRow key={rec.id}>
-								<TableCell component="th" scope="row">{rec.id}</TableCell>
-								<TableCell align="right">{rec.name}</TableCell>
-								<TableCell align="right">{rec.average_rating}</TableCell>
-								<TableCell align="right">{rec.userid}</TableCell>
+							<TableRow key={rec.recipe_id}>
+								<TableCell component="th" scope="row">{rec.recipe_id}</TableCell>
+								<TableCell align="right">{rec.recipe_name}</TableCell>
+								<TableCell align="right">{rec.avg_rating}</TableCell>
+								<TableCell align="right">{rec.creator_id}</TableCell>
 								<TableCell align="right">
-									<Button variant="contained" onClick={() => setEditDialog(rec.id)}>Edit</Button>
+									<Button variant="contained" onClick={() => setEditDialog(rec.recipe_id)}>Edit</Button>
 								</TableCell>
 								<TableCell align="right">
-								<Button variant="contained" onClick={() => removeItem(rec.id)}>Delete</Button>
+								<Button variant="contained" onClick={() => removeItem(rec.recipe_id)}>Delete</Button>
 								</TableCell>
 							</TableRow>
 						))}
