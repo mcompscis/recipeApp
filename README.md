@@ -1,11 +1,24 @@
 # cs348
-Recipe Web App
+Recipefy Web App
 
-The project's name: RecipeApp
+The app directory in this code repository contains all the main frontend and backend code.
+The frontend was created in React and the frontend code sits in app/frontend directory.
+The backend framework is Django. The Django project code sits in the app directory.
+The recipeApp inside the app directory refers to the main Django project for this repository. The main Django project contains 
+an app. The recipes directory corresponds to a Django app part of the recipeApp project. This is where the main backend code
+lies in.
 
-The Django app's name: recipe_app
+To run the React app, run the following command inside the app/frontend directory
+```bash
+npm install
+npm start
+```
 
-The app is a module of the project, and this is where the application logic sits.
+To run the Django application, run the following command inside the app directory:
+```bash
+python manage.py runserver
+```
+
 
 Inside the recipeApp directory, place the "db_credentials.json" file to get access to the AWS RDS MySQL database.
 
