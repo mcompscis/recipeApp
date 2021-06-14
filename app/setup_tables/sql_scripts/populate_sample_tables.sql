@@ -37,7 +37,8 @@ VALUES
 ('green onions'),
 ('flour'),
 ('oil'),
-('chilli powder');
+('chilli powder'),
+('spinach');
 
 INSERT INTO SampleTag(tag_text)
 VALUES
