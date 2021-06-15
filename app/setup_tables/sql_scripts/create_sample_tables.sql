@@ -69,11 +69,8 @@ CREATE TABLE IF NOT EXISTS SampleInteraction (
     FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id) ON DELETE CASCADE 
 );
 
---Trigger to ensure num_recipes_created for each user remains consistent with actual value: increase by one after each new recipe created by that user
 CREATE TRIGGER UpdateNumRecipesCreated AFTER INSERT ON SampleRecipe 
 FOR EACH ROW 
 	UPDATE SampleUser U SET num_recipes_created = num_recipes_created + 1 WHERE (U.user_id = NEW.creator_id);
 
---Updates average rating & number of ratings for Recipe, and number of ratings & average rating for User after a new User interaction (rating) is created for a Recipe
 CREATE TRIGGER UpdateRecipeInfo AFTER INSERT ON SampleInteraction FOR EACH ROW BEGIN DECLARE recipe_creator_id integer; SET recipe_creator_id = (SELECT creator_id FROM SampleRecipe R WHERE R.recipe_id = NEW.recipe_id); UPDATE SampleRecipe R SET avg_rating = CASE WHEN avg_rating IS NULL THEN NEW.rating ELSE (((avg_rating * num_ratings) + NEW.rating) / (num_ratings + 1)) END WHERE (R.recipe_id =  NEW.recipe_id); UPDATE SampleRecipe R SET num_ratings = num_ratings + 1 WHERE R.recipe_id =  NEW.recipe_id; UPDATE SampleUser U SET num_ratings_received = num_ratings_received + 1 WHERE user_id = recipe_creator_id; UPDATE SampleUser U SET avg_recipe_rating = CASE WHEN avg_recipe_rating IS NULL THEN NEW.rating ELSE ((avg_recipe_rating * (num_ratings_received - 1)) + NEW.rating) / (num_ratings_received) END WHERE U.user_id = recipe_creator_id; END;
---One line because MySql Connector does not allow delimiters
