@@ -22,11 +22,21 @@ if __name__ == "__main__":
     connection = connect(**db_creds)
     cursor = connection.cursor()
 
-    with open(f'sql_scripts/create_{args.table_type}_tables.sql', 'r') as sql_file:
+    with open(f'test-sample.sql', 'r') as sql_file:
         result_iterator = cursor.execute(sql_file.read(), multi=True)
-        for result in result_iterator:
-            print("Running query: ", result)
+        for i, result in enumerate(result_iterator):
+            print(f"Running query: {i+1}")
             print(f"Affected {result.rowcount} rows")
+            try:
+                result = []
+
+                columns = [desc[0] for desc in cursor.description]
+
+                for row in cursor.fetchall():
+                    result.append({col: row for col, row in zip(columns, row)})
+                print(result)
+            except TypeError as E:
+                continue
 
     cursor.close()
     connection.close()

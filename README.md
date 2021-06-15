@@ -35,8 +35,10 @@ GET localhost:8000/api/recipes/:pk
 
 These will return JSON of all recipes in the database or specific detail about a recipe with a certain primary key.
 
-Alternatively, navigate to localhost:8000 to view a list of all recipes displayed through a react frontend.
-This is the only frontend feature fully implemented as of now.
+Alternatively, navigate to localhost:8000 to view a list of the Top 5 recipes sorted by their average rating displayed through a react frontend.
+This is the only frontend feature fully implemented as of now that connects to the backend and gets data from the database.
+
+The test-sample.sql and test-sample.out files in the outermost directory contain our the SQL queries for 6 different features and the output of that sql script respectively. The app/milestone_1_queries directory contains individual SQL scripts for each of the 6 different features as well.
 
 Inside the recipeApp directory, place the "db_credentials.json" file to get access to the AWS RDS MySQL database.
 
