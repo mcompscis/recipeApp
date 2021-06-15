@@ -4,15 +4,15 @@ from os import path
 from .utils import get_db_creds
 from django.http import JsonResponse
 
-def exec_query(query, params = []):
+def exec_query(query, params = [], multi = False):
     db_creds = get_db_creds()
     connection = connect(**db_creds)
     cursor = connection.cursor()
 
     if len(params):
-        cursor.execute(query, params)
+        cursor.execute(query, params, multi)
     else:
-        cursor.execute(query)
+        cursor.execute(query, None, multi)
 
     columns = [desc[0] for desc in cursor.description]
     result = []
