@@ -9,7 +9,14 @@ The recipeApp inside the app directory refers to the main Django project for thi
 an app. The recipes directory corresponds to a Django app part of the recipeApp project. This is where the main backend code
 lies in.
 
-To build the React app, run the following command inside the root directory
+To build with pipenv, run the following command inside the root directory
+
+```bash
+pipenv install
+pipenv shell
+```
+
+Next, to build the React app, run the following command inside the root directory
 
 ```bash
 npm install
