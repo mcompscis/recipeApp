@@ -7,7 +7,7 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 django-rest-knox = "*"
-
+mysql-connector-python = "*"
 
 [dev-packages]
 
