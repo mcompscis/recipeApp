@@ -1,6 +1,7 @@
 -- This query returns all data associated with a specific recipe across the SampleRecipe table, SampleCuisine table, SampleRecipeTag table and SampleRecipeIngredient table,
 -- for a specific recipe id.
--- Here it is assumed that '%s' refers to the recipe ID for which we want all of the data
+-- We harcoded recipe_id as 1 but 1 will be replaced by '%s' in the future.
+-- It is assumed that '%s' refers to the recipe ID for which we want all of the data
 -- GROUP_CONCAT() is used to gather all ingredients/tags into comma separated strings
 SELECT T1.recipe_id,
        T1.recipe_name,
@@ -37,7 +38,7 @@ FROM   (SELECT R.recipe_id,
                SampleRecipeIngredient RI,
                SampleIngredient I,
                SampleCuisine C
-        WHERE  ( R.recipe_id = ( %s ) )
+        WHERE  ( R.recipe_id = 1 )
                AND ( R.recipe_id = RI.recipe_id )
                AND ( RI.ingredient_id = I.ingredient_id )
                AND ( R.cuisine_id = C.cuisine_id )
