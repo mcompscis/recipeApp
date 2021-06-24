@@ -1,7 +1,7 @@
-from rest_framework import routers
-from .api import RecipeViewSet
+from django.urls import path, include
+from . import views
 
-router = routers.DefaultRouter()
-router.register('api/recipes', RecipeViewSet, 'recipes')
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("top-five/", views.top_five),
+    path("detail/<int:pk>/", views.recipe_detail),
+]
