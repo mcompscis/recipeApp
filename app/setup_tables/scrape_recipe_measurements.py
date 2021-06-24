@@ -59,6 +59,9 @@ def scrape():
     with futures.ProcessPoolExecutor(max_workers=MAX_PROCESSES) as executor:
         scraped_measurements = np.array(list(executor.map(scrape_recipe, recipe_df["food_recipe_url"].values)))
 
+    recipe_df["quantities"] = scraped_measurements[:, 0]
+    recipe_df["measurement_units"] = scraped_measurements[:, 1]
+
     with open("scraped_food_measurements.pkl", "wb") as f:
         pickle.dump(scraped_measurements, file=f)
 
