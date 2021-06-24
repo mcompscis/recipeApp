@@ -2,9 +2,11 @@
 /app/recipeApp/__pycache__/
 /app/recipe_app/__pycache__/
 /app/recipe_app/migrations/__pycache__/
+/app/setup_tables/food_data/
 Jupyter Notebooks/
-food_data/
 /app/setup_tables/__pycache__/
+/app/setup_tables/*.pkl
+/app/setup_tables/*.csv
 node_modules
 
 ### Django ###
