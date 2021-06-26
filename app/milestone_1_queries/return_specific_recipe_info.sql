@@ -38,7 +38,7 @@ FROM   (SELECT R.recipe_id,
                SampleRecipeIngredient RI,
                SampleIngredient I,
                SampleCuisine C
-        WHERE  ( R.recipe_id = 1 )
+        WHERE  ( R.recipe_id = (%(pk)s) )
                AND ( R.recipe_id = RI.recipe_id )
                AND ( RI.ingredient_id = I.ingredient_id )
                AND ( R.cuisine_id = C.cuisine_id )

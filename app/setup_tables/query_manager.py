@@ -4,7 +4,7 @@ from os import path
 from .utils import get_db_creds
 from django.http import JsonResponse
 
-def exec_query(query, params = [], multi = False):
+def exec_query(query, params = {}, multi = False):
     db_creds = get_db_creds()
     connection = connect(**db_creds)
     cursor = connection.cursor()

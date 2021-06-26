@@ -15,6 +15,6 @@ def recipe_detail(request, pk):
         queryPath = os.path.join(os.path.dirname( __file__ ), '..', 'milestone_1_queries/return_specific_recipe_info.sql')
         with open(queryPath, 'r') as file:
             queryText = file.read()
-        return JsonResponse(exec_query(queryText, [pk]), safe=False)
+        return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
     elif request.method == 'POST':
         pass
