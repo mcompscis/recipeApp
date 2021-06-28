@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS SampleUser (
     user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
-    hashed_password VARCHAR(65) NOT NULL,
+    password VARCHAR(65) NOT NULL,
     avg_recipe_rating FLOAT,
     num_ratings_received INT NOT NULL DEFAULT 0,
     num_recipes_created INT NOT NULL DEFAULT 0
