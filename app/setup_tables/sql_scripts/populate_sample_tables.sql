@@ -1,5 +1,5 @@
 
-INSERT INTO SampleUser(username,hashed_password,avg_recipe_rating,num_ratings_received,num_recipes_created)
+INSERT INTO SampleUser(username,password,avg_recipe_rating,num_ratings_received,num_recipes_created)
 VALUES
 ('alric','password1',NULL,0,0),
 ('pranav','password2',NULL,0,0),
