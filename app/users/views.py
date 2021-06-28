@@ -11,8 +11,7 @@ def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = User.objects.create_user(username=username, hashed_password=password)
-        #print(request.session)
+        user = User.objects.create_user(username=username, password=password)
         return HttpResponse(204)
 
 def login(request):

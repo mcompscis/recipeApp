@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-#from users.models import User
 
 class Samplecuisine(models.Model):
     cuisine_id = models.AutoField(primary_key=True)
