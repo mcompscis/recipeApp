@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS SampleRecipeIngredient (
     recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL, 
     quantity FLOAT DEFAULT NULL,
-    measurement_type VARCHAR(255) DEFAULT NULL,
+    measurement_unit VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY(recipe_id, ingredient_id),
     FOREIGN KEY (recipe_id) REFERENCES SampleRecipe(recipe_id) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_id) REFERENCES SampleIngredient(ingredient_id) ON DELETE CASCADE

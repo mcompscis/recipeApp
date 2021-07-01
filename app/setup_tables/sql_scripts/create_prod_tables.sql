@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS User (
     user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
-    hashed_password VARCHAR(65) NOT NULL,
+    password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
     num_ratings_received INT NOT NULL DEFAULT 0,
     num_recipes_created INT NOT NULL DEFAULT 0
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS RecipeIngredient (
     recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL, 
     quantity INT NOT NULL,
-    measurement_type VARCHAR(255) NOT NULL,
+    measurement_unit VARCHAR(255) NOT NULL,
     PRIMARY KEY(recipe_id, ingredient_id),
     FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id) ON DELETE CASCADE
