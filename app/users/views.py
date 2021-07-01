@@ -27,7 +27,11 @@ class CustomUserCreate(APIView):
     def post(self, request, format='json'):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            user = None
+            try:
+                user = serializer.save()
+            except:
+                return JsonResponse({"error": "duplicate username"}, status=status.HTTP_400_BAD_REQUEST)
             if user:
                 json = serializer.data
                 return Response(json, status=status.HTTP_201_CREATED)
