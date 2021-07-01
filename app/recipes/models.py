@@ -7,7 +7,7 @@ class Cuisine(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleCuisine'
+        db_table = 'Cuisine'
 
 
 class Ingredient(models.Model):
@@ -16,7 +16,7 @@ class Ingredient(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleIngredient'
+        db_table = 'Ingredient'
 
 
 class Recipe(models.Model):
@@ -36,7 +36,7 @@ class Recipe(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleRecipe'
+        db_table = 'Recipe'
 
 
 class Interaction(models.Model):
@@ -48,7 +48,7 @@ class Interaction(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleInteraction'
+        db_table = 'Interaction'
         unique_together = (('user', 'recipe'),)
 
 
@@ -60,7 +60,7 @@ class Recipeingredient(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleRecipeIngredient'
+        db_table = 'RecipeIngredient'
         unique_together = (('recipe', 'ingredient'),)
 
 
@@ -70,7 +70,7 @@ class Tag(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleTag'
+        db_table = 'Tag'
 
 
 class Recipetag(models.Model):
@@ -79,5 +79,5 @@ class Recipetag(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'SampleRecipeTag'
+        db_table = 'RecipeTag'
         unique_together = (('recipe', 'tag'),)

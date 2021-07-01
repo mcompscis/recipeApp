@@ -8,4 +8,4 @@ class User(AbstractUser):
     num_recipes_created = models.IntegerField(null=False, default=0)
 
     class Meta:
-        db_table = 'SampleUser'
+        db_table = 'User'
