@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS User (
     user_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
-    hashed_password VARCHAR(65) NOT NULL,
+    password VARCHAR(65) NOT NULL,
     avg_recipe_rating DECIMAL(3, 2),
-    num_ratings_received INT NOT NULL,
-    num_recipes_created INT NOT NULL
+    num_ratings_received INT NOT NULL DEFAULT 0,
+    num_recipes_created INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS Cuisine (
@@ -20,13 +20,14 @@ CREATE TABLE IF NOT EXISTS Recipe (
     date_submitted DATE NOT NULL,
     cuisine_id INT,
     description TEXT,
+    recipe_text TEXT NOT NULL,
     calories INT,
-    avg_rating DECIMAL(3, 2),
+    avg_rating DECIMAL(3, 2) DEFAULT NULL,
     time_to_prepare INT,
-    num_ratings INT NOT NULL,
+    num_ratings INT NOT NULL DEFAULT 0,
     img_url TEXT,
-    FOREIGN KEY (creator_id) REFERENCES User(user_id),
-    FOREIGN KEY (cuisine_id) REFERENCES Cuisine(cuisine_id)
+    FOREIGN KEY (creator_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (cuisine_id) REFERENCES Cuisine(cuisine_id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS Ingredient (
@@ -43,18 +44,18 @@ CREATE TABLE IF NOT EXISTS RecipeIngredient (
     recipe_id INT NOT NULL,
     ingredient_id INT NOT NULL, 
     quantity INT NOT NULL,
-    measurement_type VARCHAR(255) NOT NULL,
+    measurement_unit VARCHAR(255) NOT NULL,
     PRIMARY KEY(recipe_id, ingredient_id),
-    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id),
-    FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id)
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_id) REFERENCES Ingredient(ingredient_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS RecipeTag (
     recipe_id INT NOT NULL ,
     tag_id INT NOT NULL,
     PRIMARY KEY(recipe_id, tag_id),
-    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id),
-    FOREIGN KEY (tag_id) REFERENCES Tag(tag_id)
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES Tag(tag_id) ON DELETE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS Interaction (
@@ -64,6 +65,12 @@ CREATE TABLE IF NOT EXISTS Interaction (
     rating DECIMAL(3, 2),
     review TEXT,
     PRIMARY KEY(user_id, recipe_id),
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
-    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id)
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE 
 );
+
+CREATE TRIGGER UpdateNumRecipesCreated_prod AFTER INSERT ON Recipe 
+FOR EACH ROW 
+	UPDATE User U SET num_recipes_created = num_recipes_created + 1 WHERE (U.user_id = NEW.creator_id);
+
+CREATE TRIGGER UpdateRecipeInfo_prod AFTER INSERT ON Interaction FOR EACH ROW BEGIN DECLARE recipe_creator_id integer; SET recipe_creator_id = (SELECT creator_id FROM Recipe R WHERE R.recipe_id = NEW.recipe_id); UPDATE Recipe R SET avg_rating = CASE WHEN avg_rating IS NULL THEN NEW.rating ELSE (((avg_rating * num_ratings) + NEW.rating) / (num_ratings + 1)) END WHERE (R.recipe_id =  NEW.recipe_id); UPDATE Recipe R SET num_ratings = num_ratings + 1 WHERE R.recipe_id =  NEW.recipe_id; UPDATE User U SET num_ratings_received = num_ratings_received + 1 WHERE user_id = recipe_creator_id; UPDATE User U SET avg_recipe_rating = CASE WHEN avg_recipe_rating IS NULL THEN NEW.rating ELSE ((avg_recipe_rating * (num_ratings_received - 1)) + NEW.rating) / (num_ratings_received) END WHERE U.user_id = recipe_creator_id; END;
