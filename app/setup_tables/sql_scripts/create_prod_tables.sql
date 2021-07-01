@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS Interaction (
     FOREIGN KEY (recipe_id) REFERENCES Recipe(recipe_id) ON DELETE CASCADE 
 );
 
-CREATE TRIGGER UpdateNumRecipesCreated AFTER INSERT ON Recipe 
+CREATE TRIGGER UpdateNumRecipesCreated_prod AFTER INSERT ON Recipe 
 FOR EACH ROW 
 	UPDATE User U SET num_recipes_created = num_recipes_created + 1 WHERE (U.user_id = NEW.creator_id);
 
-CREATE TRIGGER UpdateRecipeInfo AFTER INSERT ON Interaction FOR EACH ROW BEGIN DECLARE recipe_creator_id integer; SET recipe_creator_id = (SELECT creator_id FROM Recipe R WHERE R.recipe_id = NEW.recipe_id); UPDATE Recipe R SET avg_rating = CASE WHEN avg_rating IS NULL THEN NEW.rating ELSE (((avg_rating * num_ratings) + NEW.rating) / (num_ratings + 1)) END WHERE (R.recipe_id =  NEW.recipe_id); UPDATE Recipe R SET num_ratings = num_ratings + 1 WHERE R.recipe_id =  NEW.recipe_id; UPDATE User U SET num_ratings_received = num_ratings_received + 1 WHERE user_id = recipe_creator_id; UPDATE User U SET avg_recipe_rating = CASE WHEN avg_recipe_rating IS NULL THEN NEW.rating ELSE ((avg_recipe_rating * (num_ratings_received - 1)) + NEW.rating) / (num_ratings_received) END WHERE U.user_id = recipe_creator_id; END;
+CREATE TRIGGER UpdateRecipeInfo_prod AFTER INSERT ON Interaction FOR EACH ROW BEGIN DECLARE recipe_creator_id integer; SET recipe_creator_id = (SELECT creator_id FROM Recipe R WHERE R.recipe_id = NEW.recipe_id); UPDATE Recipe R SET avg_rating = CASE WHEN avg_rating IS NULL THEN NEW.rating ELSE (((avg_rating * num_ratings) + NEW.rating) / (num_ratings + 1)) END WHERE (R.recipe_id =  NEW.recipe_id); UPDATE Recipe R SET num_ratings = num_ratings + 1 WHERE R.recipe_id =  NEW.recipe_id; UPDATE User U SET num_ratings_received = num_ratings_received + 1 WHERE user_id = recipe_creator_id; UPDATE User U SET avg_recipe_rating = CASE WHEN avg_recipe_rating IS NULL THEN NEW.rating ELSE ((avg_recipe_rating * (num_ratings_received - 1)) + NEW.rating) / (num_ratings_received) END WHERE U.user_id = recipe_creator_id; END;
