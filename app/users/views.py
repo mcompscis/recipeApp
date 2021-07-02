@@ -6,7 +6,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from setup_tables.query_manager import exec_query
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login
 import os
 
@@ -39,7 +38,7 @@ class CustomUserCreate(APIView):
 
 class UserAPIView(APIView):
     def get(self, request):
-        users = User.objects.raw('SELECT * FROM SampleUser')  #User.objects.all()
+        users = User.objects.raw('SELECT * FROM User')  #User.objects.all()
         serializer = UserSerializer(users, many = True)
         return Response(serializer.data)
 

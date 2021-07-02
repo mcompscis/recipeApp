@@ -27,4 +27,4 @@ def exec_query(query, params = {}, multi = False):
 
     connection.commit()
     connection.close()
-    return result
+    return result[0] if len(result) == 1 else result

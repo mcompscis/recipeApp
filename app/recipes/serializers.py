@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cuisine, Ingredient, Recipe, Interaction, Recipeingredient, Tag, Recipetag,  
+from .models import Cuisine, Ingredient, Recipe, Interaction, Recipeingredient, Tag, Recipetag
 
 class CuisineSerializer(serializers.ModelSerializer):
     class Meta:
