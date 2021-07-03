@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  login: {
+    display: 'flex',  
+    justifyContent:'center', 
+    alignItems:'center', 
+  },
 }));
 
 const SignUp = () => {
@@ -96,13 +101,11 @@ const SignUp = () => {
           >
             Sign Up
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
+          <div className={classes.login}>
+            <Link href="/login" variant="body2">
+              Already have an account? Sign in
+            </Link>
+          </div> 
         </form>
       </div>
     </Container>

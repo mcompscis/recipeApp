@@ -2,6 +2,7 @@ import React from 'react'
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Navbar from './components/Navbar';
+import Homepage from './components/Homepage';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,10 +16,10 @@ import {
 const App = () => {
   return (
     <div>
-      <Navbar />
+      <Navbar/>
       <Switch>
         <Route path='/recipes'>
-          <p>RECIPES</p>
+          <Homepage/>
         </Route>
         <Route path='/login'>
           <Login/>
