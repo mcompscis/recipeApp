@@ -7,7 +7,12 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.views import APIView
-from rest_framework import status, permissions
+from rest_framework import (status, 
+                            permissions,
+                            generics,
+                            )
+
+from rest_framework.parsers import JSONParser
 
 class TopFiveAPIView(APIView):
 
@@ -27,9 +32,13 @@ class RecipeDetailAPIView(APIView):
         return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
 
 class GetRecipesAPIView(APIView):
+    limit = 50
     permission_classes = (permissions.AllowAny,)
-    def get(self, request, offset, limit):
+    def get(self, request):
+        page_num = request.query_params.get('page')
+        page_num = int(page_num[:-1] if "/" in page_num else page_num) if page_num else 1
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_n_recipes.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
-        return JsonResponse(exec_query(query_text, {'offset_val': offset, 'limit_val': limit}), safe=False)
+        offset = (page_num - 1) * self.limit
+        return JsonResponse(exec_query(query_text, {'offset_val': offset, 'limit_val': self.limit}), safe=False)
