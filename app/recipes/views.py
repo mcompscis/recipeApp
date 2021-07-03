@@ -36,7 +36,7 @@ class GetRecipesAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
-        page_num = int(page_num[:-1] if "/" in page_num else page_num) if page_num else 1
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_n_recipes.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
