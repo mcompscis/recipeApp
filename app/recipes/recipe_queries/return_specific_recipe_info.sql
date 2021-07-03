@@ -1,6 +1,5 @@
--- This query returns all data associated with a specific recipe across the SampleRecipe table, SampleCuisine table, SampleRecipeTag table and SampleRecipeIngredient table,
--- for a specific recipe id.
--- We harcoded recipe_id as 1 but 1 will be replaced by '%s' in the future.
+-- This query returns all data associated with a specific recipe across the Recipe table, Cuisine table, RecipeTag table
+-- and RecipeIngredient table, for a specific recipe id.
 -- It is assumed that '%s' refers to the recipe ID for which we want all of the data
 -- GROUP_CONCAT() is used to gather all ingredients/tags into comma separated strings
 SELECT T1.recipe_id,
