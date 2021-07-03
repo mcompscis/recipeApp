@@ -1,5 +1,6 @@
 from django.urls import path, include
 from rest_framework_simplejwt import views as jwt_views
+from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 app_name = 'users'

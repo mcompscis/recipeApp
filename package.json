@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development --watch ./app/frontend/src/index.js -o ./app/frontend/static/frontend/",
-    "build": "webpack --mode production ./app/frontend/src/index.js -o ./app/frontend/static/frontend/"
+    "build": "webpack --watch --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -24,13 +24,16 @@
     "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.2.2",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
     "style-loader": "^2.0.0",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
     "axios": "^0.21.1",
+    "jwt-decode": "^3.1.2",
     "material-ui": "^0.20.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",

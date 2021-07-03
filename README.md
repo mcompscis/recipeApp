@@ -20,7 +20,7 @@ Next, to build the React app, run the following command inside the root director
 
 ```bash
 npm install
-npm run dev
+npm run build
 ```
 
 To run the Django application, run the following command inside the app directory:
