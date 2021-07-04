@@ -56,7 +56,7 @@ class Recipeingredient(models.Model):
     recipe = models.OneToOneField(Recipe, models.DO_NOTHING, primary_key=True)
     ingredient = models.ForeignKey(Ingredient, models.DO_NOTHING)
     quantity = models.FloatField(blank=True, null=True)
-    measurement_type = models.CharField(max_length=255, blank=True, null=True)
+    measurement_unit = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False

@@ -1,1 +1,1 @@
-SELECT EXISTS (SELECT * FROM Ingredient WHERE ingredient_name = %(ingr_val)s);
+SELECT EXISTS (SELECT * FROM Ingredient WHERE ingredient_name = %(ingredient_name)s) AS DoesExist;

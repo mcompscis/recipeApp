@@ -41,7 +41,7 @@ INSERT INTO RecipeIngredient
             (recipe_id,
              ingredient_id,
              quantity,
-             measurement_type)
+             measurement_unit)
 VALUES      (@recipeID,
              (SELECT ingredient_id
               FROM   Ingredient
@@ -54,7 +54,7 @@ INSERT INTO RecipeIngredient
             (recipe_id,
              ingredient_id,
              quantity,
-             measurement_type)
+             measurement_unit)
 VALUES      (@recipeID,
              (SELECT ingredient_id
               FROM   Ingredient

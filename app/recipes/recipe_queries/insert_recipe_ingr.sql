@@ -6,6 +6,6 @@ INSERT INTO RecipeIngredient
 VALUES      (%(recipe_id)s,
              (SELECT ingredient_id
               FROM   Ingredient
-              WHERE  ingredient_name = %(ingredient)s),
+              WHERE  ingredient_name = %(ingredient_name)s),
              %(quantity)s,
-             %(measurement)s);
+             %(measurement_unit)s);
