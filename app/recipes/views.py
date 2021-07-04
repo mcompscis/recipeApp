@@ -55,6 +55,21 @@ class GetRecipeAmountAPIView(APIView):
         }
         return JsonResponse(context, safe=False)
 
+class GetRecipeReviewsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        page_num = request.query_params.get('page')
+        recipe_id = request.query_params.get('recipe_id')
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_reviews.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        offset = (page_num - 1) * limit
+
+        exec = exec_query(query_text, {'recipe_id': recipe_id, 'offset_val': offset, 'limit_val': limit})
+        print(exec)
+        return JsonResponse(exec, safe=False)
+
 
 class CreateRecipeAPIView(APIView):
 

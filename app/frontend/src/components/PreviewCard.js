@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { sizing } from '@material-ui/system';
 var capitalize = require('capitalize')
+import { Switch, Route, Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -34,23 +35,23 @@ const PreviewCard = ({recipe}) => {
     return ""
   }
   return (
-    <Card className={classes.root}>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={recipe.img_url}
-          title={recipe.recipe_name}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {capitalize.words(recipe.recipe_name)}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" maxLength={100}>
-            {genDescription(recipe)}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+      <Card className={classes.root}>
+        <CardActionArea component={Link} to={`/recipe/${recipe.recipe_id}`}>
+          <CardMedia
+            className={classes.media}
+            image={recipe.img_url}
+            title={recipe.recipe_name}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              {capitalize.words(recipe.recipe_name)}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p" maxLength={100}>
+              {genDescription(recipe)}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
   );
 }
 
