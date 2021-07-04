@@ -116,6 +116,16 @@ class CreateRecipe(APIView):
         with open(insert_recipe_ingr_path, 'r') as file:
             recipe_ingr = file.read()
         
+
+        #TODO: Might be better to have this generate a sql query and execute that instead of opening multiple connections
+        #Example -
+        # for  ingredient,quantity,measurement in zip(ingredients,quantities,measurements):
+        #    single_query = f"INSERT INTO RecipeIngredient(recipe_id,ingredient_id, quantity,measurement_type) VALUES ({recipe_id}, (SELECT ingredient_id FROM   Ingredient WHERE  ingredient_name = {ingredient}, {quantity}, {measurement});\n"
+        #    full_query += single_query
+        # exec_query(full_query)
+        #
+
+
         for ingredient,quantity,measurement in zip(ingredients,quantities,measurements):
             exec_query(recipe_ingr, {'recipe_id':recipe_id,'ingredient':ingredient,'quantity':quantity,'measurement':measurement})
 
