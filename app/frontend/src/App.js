@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import Navbar from './components/Navbar';
 import Homepage from './components/Homepage';
+import Recipe from './components/Recipe'
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,6 +21,9 @@ const App = () => {
       <Switch>
         <Route path='/recipes'>
           <Homepage/>
+        </Route>
+        <Route path='/recipe/:id'>
+          <Recipe/>
         </Route>
         <Route path='/login'>
           <Login/>

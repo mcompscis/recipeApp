@@ -13,4 +13,9 @@ const getAmount = async () => {
   return response.data;
 }
 
-export default { getList, getAmount }
+const getDetail = async (id) => {
+  const response = await axios.get(baseUrl + `/detail/${id}/`)
+  return response.data;
+}
+
+export default { getList, getAmount, getDetail }

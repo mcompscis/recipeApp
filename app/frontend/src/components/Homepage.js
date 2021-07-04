@@ -39,6 +39,7 @@ const Homepage = () => {
   const [recipeCreate, setRecipeCreate] = useState(false)
 
   useEffect(() => {
+    console.log("HOMEPAGE HERE")
       recipe.getAmount().then(detail => 
         setPageCount(Math.ceil(detail.num_recipes["COUNT(*)"] / detail.num_per_page)) 
       )
