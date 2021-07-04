@@ -8,4 +8,9 @@ const getList = async (pageNumber) => {
   return response.data;
 }
 
-export default { getList }
+const getAmount = async () => {
+  const response = await axios.get(baseUrl + `/amount`)
+  return response.data;
+}
+
+export default { getList, getAmount }

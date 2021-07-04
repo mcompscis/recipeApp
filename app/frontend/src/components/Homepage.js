@@ -7,7 +7,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { loadRecipes } from '../reducers/recipeReducer';
 import PreviewCard from './PreviewCard';
 import recipe from '../services/recipe'
-
+import AddRecipeButton from './AddRecipeButton';
+import UploadRecipe from './UploadRecipe';
 
 const useStyles = makeStyles({
   flexbox: {
@@ -33,33 +34,49 @@ const useStyles = makeStyles({
 const Homepage = () => {
   const classes = useStyles()
   const [pageNum, setPageNum] = useState(1)
+  const [pageCount, setPageCount] = useState(1)
   const [recipeList, setRecipeList] = useState([])
-  const dispatch = useDispatch()
+  const [recipeCreate, setRecipeCreate] = useState(false)
+
   useEffect(() => {
-      //dispatch(loadRecipes(pageNum))
+      recipe.getAmount().then(detail => 
+        setPageCount(Math.ceil(detail.num_recipes["COUNT(*)"] / detail.num_per_page)) 
+      )
+
       recipe.getList(pageNum).then(recipes =>
         setRecipeList(recipes)
       )
   }, [])
 
   const handleChange = async (event, value) => {
+    event.preventDefault();
     setPageNum(value);
     const recipes = await recipe.getList(value)
     setRecipeList(recipes)
     window.scrollTo(0, 0)
   };
 
+  const appendRecipeList = () => {
+
+  }
+
   return(
     <Container component="main" >
       <CssBaseline/>
+        <UploadRecipe
+          open={recipeCreate}
+          onClose={() => setRecipeCreate(false)}
+          appendRecipeList={appendRecipeList}
+        />
         <div className={classes.flexbox}>
           {recipeList.map(recipe =>
             <PreviewCard recipe={recipe} key={recipe.recipe_id}/>
           )}
         </div>
         <div className={classes.flexbox}>
-          <Pagination className="paginateDiv" count={10} onChange={handleChange} />
+          <Pagination className="paginateDiv" count={pageCount} onChange={handleChange} />
         </div>
+        <AddRecipeButton onClick={() => setRecipeCreate(true) } />
     </Container>
   )
 }

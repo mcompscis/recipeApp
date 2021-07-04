@@ -14,8 +14,9 @@ from rest_framework import (status,
 
 from rest_framework.parsers import JSONParser
 
-class TopFiveAPIView(APIView):
+limit = 48
 
+class TopFiveAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         queryPath = os.path.join(os.path.dirname( __file__ ), 'recipe_queries/get_top_recipes.sql')
@@ -32,7 +33,6 @@ class RecipeDetailAPIView(APIView):
         return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
 
 class GetRecipesAPIView(APIView):
-    limit = 24
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
@@ -40,5 +40,17 @@ class GetRecipesAPIView(APIView):
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_n_recipes.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
-        offset = (page_num - 1) * self.limit
-        return JsonResponse(exec_query(query_text, {'offset_val': offset, 'limit_val': self.limit}), safe=False)
+        offset = (page_num - 1) * limit
+        return JsonResponse(exec_query(query_text, {'offset_val': offset, 'limit_val': limit}), safe=False)
+
+class GetRecipeAmountAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_num_recipes.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        context = {
+            "num_recipes": exec_query(query_text),
+            "num_per_page": limit
+        }
+        return JsonResponse(context, safe=False)
