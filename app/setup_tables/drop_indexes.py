@@ -12,8 +12,8 @@ if __name__ == "__main__":
             default="sample",
             choices=["sample", "prod"],
             help="""Choose between dropping
-            Sample Tables or Production Tables.
-            Defaults to dropping the Sample Tables.
+            Sample Table indexes or Production Table indexes
+            Defaults to dropping the Sample Table indexes.
             """
             )
     args = parser.parse_args()
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     connection = connect(**db_creds)
     cursor = connection.cursor()
 
-    with open(f'sql_scripts/drop_{args.table_type}_tables.sql', 'r') as sql_file:
+    with open(f'sql_scripts/drop_{args.table_type}_indexes.sql', 'r') as sql_file:
         result_iterator = cursor.execute(sql_file.read(), multi=True)
         for result in result_iterator:
             print("Running query: ", result)

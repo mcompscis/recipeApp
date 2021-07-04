@@ -49,7 +49,7 @@ VALUES
 ('PG-13');
 
 INSERT INTO 
-SampleRecipeIngredient(recipe_id,ingredient_id,quantity,measurement_type)
+SampleRecipeIngredient(recipe_id,ingredient_id,quantity,measurement_unit)
 VALUES
 (1,1,2,'cups'),
 (1,2,2,'kg'),
