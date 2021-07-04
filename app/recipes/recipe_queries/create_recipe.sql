@@ -1,5 +1,5 @@
 SET @cuisineID = (SELECT cuisine_id FROM Cuisine WHERE cuisine_name =
-%(cuisine)s);
+%(cuisine_name)s);
 
 -- The following query will create a 'Palak Paneer' recipe and insert it into the Recipe table, all values below will be user input from the recipe creation table
 INSERT INTO Recipe

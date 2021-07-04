@@ -12,7 +12,7 @@ recipe_id,creator_id,recipe_name,serves,date_submitted,cuisine_id,description,re
 4,4,Shawarma,3,1979-01-01,2,epic,recipe_here,120,4.4,49,2,https://2leoi01pv87xeeh823nq9mgv-wpengine.netdna-ssl.com/wp-content/uploads/2021/01/Lazeez-Red-White.png,,,
 ,,,,,,,,,,,,,,,
 RESULT FOR Query 4,,,,,,,,,,,,,,,
-recipe_id,recipe_name,serves,date_submitted,cuisine_name,description,recipe_text,calories,avg_rating,time_to_prepare,num_ratings,img_url,ingredients,quantities,measurement_types,tag_text
+recipe_id,recipe_name,serves,date_submitted,cuisine_name,description,recipe_text,calories,avg_rating,time_to_prepare,num_ratings,img_url,ingredients,quantities,measurement_units,tag_text
 1,Korean Fried Chicken,3,2020-12-01,Korean,yum,recipe_here,400,5,90,1,https://www.kitchensanctuary.com/wp-content/uploads/2019/08/Korean-Fried-Chicken-square-FS-New-7377.jpg,"salt,chicken,green onions,flour,oil,chilli powder","2,2,1,3,3,3","cups,kg,gram,kg,tsp,tsp","spicy,peanuts"
 ,,,,,,,,,,,,,,,
 RESULT FOR QUERY 6,,,,,,,,,,,,,,,
