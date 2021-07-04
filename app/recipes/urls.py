@@ -7,4 +7,5 @@ urlpatterns = [
     path("get_recipes/", views.GetRecipesAPIView.as_view()),
     path("amount/", views.GetRecipeAmountAPIView.as_view()),
     path("create-recipe/", views.CreateRecipeAPIView.as_view()),
+    path("get-reviews/", views.GetRecipeReviewsAPIView.as_view()),
 ]
