@@ -55,10 +55,26 @@ class GetRecipeAmountAPIView(APIView):
         }
         return JsonResponse(context, safe=False)
 
+class GetRecipeReviewsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        page_num = request.query_params.get('page')
+        recipe_id = request.query_params.get('recipe_id')
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_reviews.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        offset = (page_num - 1) * limit
 
-class CreateRecipe(APIView):
+        exec = exec_query(query_text, {'recipe_id': recipe_id, 'offset_val': offset, 'limit_val': limit})
+        print(exec)
+        return JsonResponse(exec, safe=False)
+
+
+class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
+        # request.data
         data = JSONParser().parse(request)
         #try this if above doesn't work
         # data = json.loads(request)
@@ -76,43 +92,51 @@ class CreateRecipe(APIView):
 
 
         #Inserting Ingredients into Ingredient table if not exists
+        recipe_name = data["recipe_name"]
+        print(request.user.user_id)
         ingredients = data["ingredients"]
+        if not ingredients:
+            print("Ingredients is null")
         quantities = data["quantities"]
-        measurements = data["measurements"]
+        measurement_units = data["measurement_units"]
 
-        check_ingr_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/check_ingredients.sql')
-        insert_ingr_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/insert_ingredients.sql')
-
-        with open(check_ingr_path, 'r') as file:
-            check_ingr = file.read()
-        with open(insert_ingr_path, 'r') as file:
-            insert_ingr = file.read()
-
-        for ingredient in ingredients:
-            if not exec_query(check_ingr,{'ingr_val':ingredient} ):
-                exec_query(insert_ingr,{'ingr_val':ingredient})
-
+        check_ingr_query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/check_ingredients.sql')
+        insert_ingr_query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/insert_ingredients.sql')
 
         #Creating recipe in recipe table and returning recipe_id
-        create_recipe_path = os.path.join(os.path.dirname(file), 'recipe_queries/create_recipe.sql')
+        create_recipe_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/create_recipe.sql')
         with open(create_recipe_path, 'r') as file:
             create_recipe = file.read()
-
-        create_recipe_fields = {'creator_id':data['creator_id'], 
-                                'recipe_name':data['recipe_name'],
-                                'serves':data['serves'],
-                                'date_submitted':data['date_submitted'], 
-                                'cuisine':data['cuisine'],
-                                'description':data['description'],
-                                'recipe_text':data['recipe_text'],
+        
+        # TODO: Do not expect a date_submitted entry for JSON, rather use current time in the backend for date_submitted field.
+        create_recipe_fields = {'creator_id': request.user.user_id, 
+                                'recipe_name': data['recipe_name'],
+                                'serves': data['serves'],
+                                'date_submitted': data['date_submitted'], 
+                                'cuisine_name': data['cuisine_name'],
+                                'description': data['description'],
+                                'recipe_text': data['recipe_text'],
                                 'calories': data['calories'],
-                                'time_to_prepare':data['time_to_prepare'],
-                                'img_url':data['img_url']}
+                                'time_to_prepare': data['time_to_prepare'],
+                                'img_url': data['img_url']}
+        
+        recipe_id = exec_query(create_recipe, data)
+        print(recipe_id)
+        
+        with open(check_ingr_query_path, 'r') as file:
+            check_ingr_query = file.read()
+        with open(insert_ingr_query_path, 'r') as file:
+            insert_ingr_query = file.read()
 
-        recipe_id = exec_query(create_recipe,create_recipe_fields)
+        for ingredient in ingredients:
+            if not exec_query(check_ingr_query,{'ingr_val':ingredient}):
+                exec_query(insert_ingr_query,{'ingr_val':ingredient})
+
+
+
 
         #Inserting into RecipeIngredient table
-        insert_recipe_ingr_path = os.path.join(os.path.dirname(file), 'recipe_queries/insert_recipe_ingr.sql')
+        insert_recipe_ingr_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/insert_recipe_ingr.sql')
         with open(insert_recipe_ingr_path, 'r') as file:
             recipe_ingr = file.read()
         
