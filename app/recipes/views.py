@@ -54,3 +54,98 @@ class GetRecipeAmountAPIView(APIView):
             "num_per_page": limit
         }
         return JsonResponse(context, safe=False)
+
+
+class CreateRecipe(APIView):
+
+    def post(self, request, format="json"):
+        data = JSONParser().parse(request)
+        #try this if above doesn't work
+        # data = json.loads(request)
+
+
+        # 1. ingr, quantities, measurements = From data, get ingredients, quantities, measurements.
+        # 2. recipe_id = Insert recipe, get back recipe_id
+        # For ingr, quantity, measurement, each zip(ingr, quantities, measurements):
+        #   ingr_id = run a query against it: it gets the ingredient_id of that ingredient (by searching or creating a new ingredient)
+        #   run_query(insert_into_recipe_ingredient(ingredient_id, recipe_id, quantity, measurement))
+        # tags = get tags from data
+        # for tag in tags:
+        #   tag_id = gets the tag_id of that tag or create new tag and return its id from the Tag Table
+        #   insert into RecipeTag(recipe_id, tag_id)
+
+
+        #Inserting Ingredients into Ingredient table if not exists
+        ingredients = data["ingredients"]
+        quantities = data["quantities"]
+        measurements = data["measurements"]
+
+        check_ingr_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/check_ingredients.sql')
+        insert_ingr_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/insert_ingredients.sql')
+
+        with open(check_ingr_path, 'r') as file:
+            check_ingr = file.read()
+        with open(insert_ingr_path, 'r') as file:
+            insert_ingr = file.read()
+
+        for ingredient in ingredients:
+            if not exec_query(check_ingr,{'ingr_val':ingredient} ):
+                exec_query(insert_ingr,{'ingr_val':ingredient})
+
+
+        #Creating recipe in recipe table and returning recipe_id
+        create_recipe_path = os.path.join(os.path.dirname(file), 'recipe_queries/create_recipe.sql')
+        with open(create_recipe_path, 'r') as file:
+            create_recipe = file.read()
+
+        create_recipe_fields = {'creator_id':data['creator_id'], 
+                                'recipe_name':data['recipe_name'],
+                                'serves':data['serves'],
+                                'date_submitted':data['date_submitted'], 
+                                'cuisine':data['cuisine'],
+                                'description':data['description'],
+                                'recipe_text':data['recipe_text'],
+                                'calories': data['calories'],
+                                'time_to_prepare':data['time_to_prepare'],
+                                'img_url':data['img_url']}
+
+        recipe_id = exec_query(create_recipe,create_recipe_fields)
+
+        #Inserting into RecipeIngredient table
+        insert_recipe_ingr_path = os.path.join(os.path.dirname(file), 'recipe_queries/insert_recipe_ingr.sql')
+        with open(insert_recipe_ingr_path, 'r') as file:
+            recipe_ingr = file.read()
+        
+        for ingredient,quantity,measurement in zip(ingredients,quantities,measurements):
+            exec_query(recipe_ingr, {'recipe_id':recipe_id,'ingredient':ingredient,'quantity':quantity,'measurement':measurement})
+
+        
+        #Inserting into Tag table if tag doesm't already exist
+        tags = data["tags"]
+
+        check_tag_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/check_tag.sql')
+        insert_tag_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/insert_tag.sql')
+        with open(check_ingr_path, 'r') as file:
+            check_tag = file.read()
+        with open(insert_ingr_path, 'r') as file:
+            insert_tag= file.read()
+
+
+
+        for tag in tags:
+            if not exec_query(check_tag,{'tag_text':tag} ):
+                exec_query(insert_tag,{'tag_text':tag})
+
+    
+        #Inserting into RecipeTag table 
+        insert_recipe_tag_path = os.path.join(os.path.dirname(file), 'recipe_queries/insert_recipe_tag.sql')
+        with open(insert_recipe_tag_path, 'r') as file:
+            recipe_tag = file.read()
+
+        for tag in tags:
+            exec_query(recipe_ingr, {'recipe_id':recipe_id,'tag_text':tag})
+ 
+
+        #return JsonResponse(exec_query(query_text, data), safe=False)
+        #TODO: figure out what to return
+        return 

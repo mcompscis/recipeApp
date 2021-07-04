@@ -1,0 +1,1 @@
+SELECT EXISTS (SELECT * FROM Ingredient WHERE ingredient_name = %(ingr_val)s)
