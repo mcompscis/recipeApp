@@ -67,9 +67,33 @@ class GetRecipeReviewsAPIView(APIView):
         offset = (page_num - 1) * limit
 
         exec = exec_query(query_text, {'recipe_id': recipe_id, 'offset_val': offset, 'limit_val': limit})
-        print(exec)
         return JsonResponse(exec, safe=False)
 
+
+class SearchRecipeAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        recipe_name = request.query_params.get("recipe_name")
+        page_num = request.query_params.get('page')
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        recipe_name = recipe_name[:-1] if "/" == recipe_name[-1] else recipe_name
+        get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                  'recipe_queries/get_num_recipes_with_recipe_name.sql')
+        search_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                       'recipe_queries/search_recipe_name.sql')
+        with open(get_num_recipes_query_path, 'r') as file:
+            get_num_recipes_query = file.read()
+        with open(search_recipes_query_path, 'r') as file:
+            search_recipes_query = file.read()
+        offset = (page_num - 1) * limit
+        exec1 = exec_query(get_num_recipes_query, 
+                           {'recipe_name': recipe_name})
+        searched_results = exec_query(search_recipes_query, 
+                                      {'recipe_name': recipe_name, 
+                                       'offset_val': offset, 
+                                       'limit_val': limit})
+        return JsonResponse({"key_results": searched_results,
+                             "num_total_results": exec1["CNT"]}, safe=False)
 
 class CreateRecipeAPIView(APIView):
 
