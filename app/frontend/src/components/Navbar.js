@@ -29,7 +29,7 @@ const NavBarButtons = () => {
     loggedIn = true
     //let loggedInUser = localStorage.getItem('username')
   }
-  if (!loggedIn){
+  if (loggedIn){
     return(
       <div className={classes.root}>
          <IconButton

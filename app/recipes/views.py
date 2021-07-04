@@ -32,7 +32,7 @@ class RecipeDetailAPIView(APIView):
         return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
 
 class GetRecipesAPIView(APIView):
-    limit = 50
+    limit = 24
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
