@@ -120,7 +120,7 @@ class CreateRecipe(APIView):
         #TODO: Might be better to have this generate a sql query and execute that instead of opening multiple connections
         #Example -
         # for  ingredient,quantity,measurement in zip(ingredients,quantities,measurements):
-        #    single_query = f"INSERT INTO RecipeIngredient(recipe_id,ingredient_id, quantity,measurement_type) VALUES ({recipe_id}, (SELECT ingredient_id FROM   Ingredient WHERE  ingredient_name = {ingredient}, {quantity}, {measurement});\n"
+        #    single_query = f"INSERT INTO RecipeIngredient(recipe_id,ingredient_id, quantity,measurement_unit) VALUES ({recipe_id}, (SELECT ingredient_id FROM   Ingredient WHERE  ingredient_name = {ingredient}, {quantity}, {measurement});\n"
         #    full_query += single_query
         # exec_query(full_query)
         #
