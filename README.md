@@ -80,3 +80,4 @@ Solutions for those problems:
 
 The Python Jupyter Notebook used to load the data into the Database was [migrate_tables.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/migrate_tables.ipynb). We have also created a Python script called [populate_prod_tables.py](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/populate_prod_tables.py) for it, but we have yet to fully test it.
 
+In the migrate_tables.ipynb notebook and populate_prod_tables.py script, we took the transformed versions of the CSV files that were saved to disk from  [data_cleaning_and_transformation.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/data_cleaning_and_transformation.ipynb) and loaded these new CSV files as pandas DataFrames. Using SQLAlchemy, we opened a connection our MySQL Database and moved the data to the tables in the database using the to_sql method for DataFrames in pandas. 
