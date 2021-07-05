@@ -24,4 +24,12 @@ const getSearch = async (search, page) => {
   return response.data
 }
 
-export default { getList, getAmount, getDetail, getSearch }
+const postRecipe = async (jsonObj) => {
+  console.log('Trying to post recipe: ', jsonObj);
+  const response = await axiosInstance.post('create-recipe/', jsonObj);
+  console.log('Posted recipe: ', jsonObj);
+  console.log('Post response: ', response);
+  return response;
+}
+
+export default { getList, getAmount, getDetail, getSearch, postRecipe }

@@ -13,6 +13,9 @@ import CheckIcon from "@material-ui/icons/Check";
 const humanizeDuration = require("humanize-duration");
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import axiosInstance from "../services/axiosApi";
+import recipe from '../services/recipe'
+import { async } from "regenerator-runtime";
 
 const useStyles = makeStyles(theme => ({
   uploadBtn: {
@@ -68,8 +71,31 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     }
   }, [success]);
 
-  function handleSave() {
-    
+  //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
+
+  const handleSave = async() => {
+    console.log('save invoked');
+    const jsonObj = {
+      "recipe_name": newName,
+      "recipe_text": newPreparation,
+      "description": newDescription,
+      "calories": newCalories,
+      "time_to_prepare": newPrepTime,
+      "img_url": "",
+      "serves": newServes,
+      "ingredient_names": [],
+      "quantities": [],
+      "measurement_units": [],
+      "cuisine_name": newCuisine,
+      "tags": []
+    };
+    try {
+      const response = await recipe.postRecipe(jsonObj);
+      return response;
+    } 
+    catch (error) {
+        
+    }
   }
 
   return (
@@ -182,7 +208,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             color="primary"
             className={success ? classes.buttonSuccess : null}
             disabled={loading}
-            onClick={handleSave}
+            onClick={() => handleSave()}
           >
             {success ? <CheckIcon /> : "Save"}
           </Button>

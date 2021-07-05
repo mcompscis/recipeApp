@@ -98,9 +98,11 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
         #TODO
         pass
 
+
 class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
+        print('recipe invokedddddddddddddd')
         data = JSONParser().parse(request)
 
         #Inserting Ingredients into Ingredient table if not exists
