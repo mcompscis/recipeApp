@@ -65,7 +65,7 @@ To generate the production dataset, we downloaded data on recipes scraped from F
 
 The files from the above link consisted of the following important CSV and Pickle files that we used: ingr_map.pkl (which contains the ingredients mapping to ingredient ids), RAW_interactions.csv (a raw table of ratings and reviews), RAW_recipes.csv (a raw tables of data on recipes), and PP_recipes.csv (which had recipes data with ingredient ids that corresponds to the mapping in ingr_map.pkl).
 
-We used all these dataset files and used Python Jupyter Notebooks to extract, clean and transform many of these files into new CSVs.
+We used all these dataset files and used Python Jupyter Notebooks to extract, clean and transform many of these files into new CSVs using the Python Notebook[data_cleaning_and_transformation.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/data_cleaning_and_transformation.ipynb).
 
 Some problems faced: 
 1. There were no usernames for the users in the data downloaded from Kaggle.
