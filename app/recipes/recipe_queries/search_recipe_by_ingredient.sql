@@ -1,18 +1,20 @@
 -- This query filters the Recipe table such that only entries with specified ingredients and those without the specified allergens will be returned
--- The HAVING clause will be modified by the backend to include all filters
 -- The query below assumes that the user wants to filter the recipe list based on ingredients like 'chicken' and 'chilli powder'
 -- and wants to avoid the ingredient 'paneer'
--- TODO: Change hardcoded ingredients to dynamic strings using %s
-SELECT R.recipe_id,
-       R.recipe_name,
-       GROUP_CONCAT(ingredient_name) AS "ingredients"
-FROM   Recipe R,
-       RecipeIngredient RI,
-       Ingredient I
-WHERE  ( R.recipe_id = RI.recipe_id )
-       AND ( RI.ingredient_id = I.ingredient_id )
-GROUP  BY R.recipe_id,
-          R.recipe_name
-HAVING ( ingredients LIKE "%chicken%" )
-       AND ( ingredients LIKE "%chilli powder%" )
-       AND ( ingredients NOT LIKE "%paneer%" ); 
+SELECT DISTINCT recipe_name
+FROM (
+	SELECT ri.ingredient_id,  ri.recipe_id, i.ingredient_name, r.recipe_name
+	FROM Ingredient AS i
+	INNER JOIN RecipeIngredient AS ri 
+              ON i.ingredient_id = ri.ingredient_id
+	INNER JOIN Recipe AS r
+              ON ri.recipe_id = r.recipe_id
+	WHERE ri.recipe_id NOT IN (
+			SELECT DISTINCT (ri.recipe_id)
+			FROM Ingredient AS i
+			INNER JOIN RecipeIngredient AS ri ON i.ingredient_id = ri.ingredient_id
+			WHERE i.ingredient_name LIKE %(exclude_ingredient_1)s
+		)
+              AND ingredient_name LIKE %(include_ingredient_1)s
+) T
+ORDER BY recipe_name;

@@ -93,6 +93,11 @@ class SearchRecipeAPIView(APIView):
         return JsonResponse({"key_results": searched_results,
                              "num_pages": math.ceil(float(exec1["CNT"]/limit))}, safe=False)
 
+class SearchRecipeBasedOnIngredientsAPIView(APIView):
+    def get(self, request):
+        #TODO
+        pass
+
 class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
