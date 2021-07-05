@@ -1,6 +1,6 @@
 -- This query filters the Recipe table such that only entries with specified ingredients and those without the specified allergens will be returned
--- The query below assumes that the user wants to filter the recipe list based on ingredients like 'chicken' and 'chilli powder'
--- and wants to avoid the ingredient 'paneer'
+-- The query below assumes that the user wants to filter the recipe list based on ingredients like 'chicken' as an example of include_ingredient_1
+-- and wants to avoid the ingredient 'paneer' as an example of exclude_ingredient_1
 SELECT DISTINCT recipe_name
 FROM (
 	SELECT ri.ingredient_id,  ri.recipe_id, i.ingredient_name, r.recipe_name
