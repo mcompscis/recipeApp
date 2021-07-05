@@ -4,11 +4,10 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Pagination from '@material-ui/lab/Pagination';
 import { makeStyles } from '@material-ui/core/styles';
-import { loadRecipes } from '../reducers/recipeReducer';
-import PreviewCard from './PreviewCard';
 import recipe from '../services/recipe'
 import AddRecipeButton from './AddRecipeButton';
 import UploadRecipe from './UploadRecipe';
+import ResultList from './ResultList';
 
 const useStyles = makeStyles({
   flexbox: {
@@ -38,28 +37,35 @@ const Homepage = () => {
   const [recipeList, setRecipeList] = useState([])
   const [recipeCreate, setRecipeCreate] = useState(false)
 
-  useEffect(() => {
-    console.log("HOMEPAGE HERE")
+  let searchName = useSelector(state => state.search.name)
+  const returnResults = async (page) => {
+    if(searchName === ''){
       recipe.getAmount().then(detail => 
-        setPageCount(Math.ceil(detail.num_recipes["COUNT(*)"] / detail.num_per_page)) 
+        setPageCount(detail.num_pages) 
       )
-
-      recipe.getList(pageNum).then(recipes =>
+      recipe.getList(page).then(recipes =>
         setRecipeList(recipes)
       )
-  }, [])
+    }
+    else {
+      let res = await recipe.getSearch(searchName, page)
+      setPageCount(res.num_pages)
+      setRecipeList(res.key_results)
+    }
+  }
+  
+  useEffect(() => {
+    returnResults(pageNum)
+  }, [searchName])
 
   const handleChange = async (event, value) => {
     event.preventDefault();
     setPageNum(value);
-    const recipes = await recipe.getList(value)
-    setRecipeList(recipes)
+    returnResults(value)
     window.scrollTo(0, 0)
   };
 
-  const appendRecipeList = () => {
-
-  }
+  const appendRecipeList = () => {}
 
   return(
     <Container component="main" >
@@ -69,11 +75,7 @@ const Homepage = () => {
           onClose={() => setRecipeCreate(false)}
           appendRecipeList={appendRecipeList}
         />
-        <div className={classes.flexbox}>
-          {recipeList.map(recipe =>
-            <PreviewCard recipe={recipe} key={recipe.recipe_id}/>
-          )}
-        </div>
+        <ResultList recipes={recipeList}/>
         <div className={classes.flexbox}>
           <Pagination className="paginateDiv" count={pageCount} onChange={handleChange} />
         </div>

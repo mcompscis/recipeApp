@@ -4,8 +4,10 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 import userReducer from './reducers/userReducer'
 import recipeReducer, {loadRecipes} from './reducers/recipeReducer'
+import searchReducer from './reducers/searchReducer'
 
 const reducer = combineReducers({
+  search: searchReducer,
   user: userReducer,
   recipes: recipeReducer
 })
