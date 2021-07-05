@@ -1,4 +1,6 @@
-
+-- NOTE: For these queries, the dynamic strings have been replaced with hardcoded values to work on MySQL workbench
+-- to produce the output. 
+-- The test-production.out file contains the output for these queries with the hardcoded values.
 -- Queries for Feature 1
 SELECT EXISTS (SELECT * FROM Ingredient WHERE ingredient_name = "spinach") AS DoesExist;
 
