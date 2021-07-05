@@ -3,6 +3,7 @@ from setup_tables.query_manager import exec_query
 import os
 from datetime import datetime
 from rest_framework.response import Response
+import math
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -49,11 +50,8 @@ class GetRecipeAmountAPIView(APIView):
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_num_recipes.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
-        context = {
-            "num_recipes": exec_query(query_text),
-            "num_per_page": limit
-        }
-        return JsonResponse(context, safe=False)
+        exec1 = exec_query(query_text)
+        return JsonResponse({"num_pages": math.ceil(float(exec1["CNT"]/limit))}, safe=False)
 
 class GetRecipeReviewsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -93,7 +91,7 @@ class SearchRecipeAPIView(APIView):
                                        'offset_val': offset, 
                                        'limit_val': limit})
         return JsonResponse({"key_results": searched_results,
-                             "num_total_results": exec1["CNT"]}, safe=False)
+                             "num_pages": math.ceil(float(exec1["CNT"]/limit))}, safe=False)
 
 class CreateRecipeAPIView(APIView):
 

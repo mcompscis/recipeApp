@@ -4,7 +4,7 @@ import axios from 'axios'
 const baseUrl = 'http://127.0.0.1:8000/api/recipes'
 
 const getList = async (pageNumber) => {
-  const response = await axios.get(baseUrl + `/get_recipes?page=${pageNumber}`)
+  const response = await axios.get(baseUrl + `/get-recipes?page=${pageNumber}`)
   return response.data;
 }
 
@@ -18,4 +18,10 @@ const getDetail = async (id) => {
   return response.data;
 }
 
-export default { getList, getAmount, getDetail }
+const getSearch = async (search, page) => {
+  let url = baseUrl + `/search-recipe?${search}&page=${page}`
+  const response = await axios.get(url)
+  return response.data
+}
+
+export default { getList, getAmount, getDetail, getSearch }
