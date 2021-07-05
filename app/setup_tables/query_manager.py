@@ -22,11 +22,9 @@ def exec_query(query, params = {}, multi = False):
     if cursor.description is not None:
         columns = [desc[0] for desc in cursor.description]
         result = []
-
         for row in cursor.fetchall():
             row = dict(zip(columns, row))
             result.append(row)
         return result[0] if len(result) == 1 else result
-
     connection.commit()
     connection.close()

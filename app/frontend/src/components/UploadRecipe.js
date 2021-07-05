@@ -71,24 +71,38 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     }
   }, [success]);
 
-  //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
+  //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(ingredientname)
 
   const handleSave = async() => {
     console.log('save invoked');
+    // const jsonObj = {
+    //   "recipe_name": newName,
+    //   "recipe_text": newPreparation,
+    //   "description": newDescription,
+    //   "calories": newCalories,
+    //   "time_to_prepare": newPrepTime,
+    //   "img_url": "",
+    //   "serves": newServes,
+    //   "ingredient_names": [],
+    //   "quantities": [],
+    //   "measurement_units": [],
+    //   "cuisine_name": newCuisine,
+    //   "tags": []
+    // };
     const jsonObj = {
-      "recipe_name": newName,
-      "recipe_text": newPreparation,
-      "description": newDescription,
-      "calories": newCalories,
-      "time_to_prepare": newPrepTime,
-      "img_url": "",
-      "serves": newServes,
-      "ingredient_names": [],
-      "quantities": [],
-      "measurement_units": [],
-      "cuisine_name": newCuisine,
-      "tags": []
-    };
+      "recipe_name": "testtest123",
+      "recipe_text": "Do this",
+      "description": null,
+      "calories": 100,
+      "time_to_prepare": 40,
+      "img_url": "https://img.sndimg.com/food/image/upload/c_thumb,q_80,w_562,h_316/v1/img/recipes/32/86/0/picWRe4S6.jpg",
+      "serves": 1,
+      "ingredient_names": ["spinach", "mayo", "bla"],
+      "quantities": [1,0.5, null],
+      "measurement_units": ["cups", "cups", null],
+      "cuisine_name": "indian",
+      "tags": ["this", "that"]
+  };
     try {
       const response = await recipe.postRecipe(jsonObj);
       return response;
