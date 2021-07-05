@@ -1,5 +1,8 @@
 # cs348
 
+[//]: # 'This read me is written in Markdown read with interpreter for best results '
+
+
 Recipefy Web App
 
 The app directory in this code repository contains all the main frontend and backend code.
@@ -81,3 +84,44 @@ Solutions for those problems:
 The Python Jupyter Notebook used to load the data into the Database was [migrate_tables.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/migrate_tables.ipynb). We have also created a Python script called [populate_prod_tables.py](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/populate_prod_tables.py) for it, but we have yet to fully test it.
 
 In the migrate_tables.ipynb notebook and populate_prod_tables.py script, we took the transformed versions of the CSV files that were saved to disk from  [data_cleaning_and_transformation.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/data_cleaning_and_transformation.ipynb) and loaded these new CSV files as pandas DataFrames. Using SQLAlchemy, we opened a connection our MySQL Database and moved the data to the tables in the database using the to_sql method for DataFrames in pandas. 
+
+### Three Implemented Features
+
+The Features listed below are in reference to the Six features mentioned in the midterm document 
+
+All currently implemented features require the frontend to make API requests to the Django backend which in turn executes the appropriate SQL queries.
+
+The frontend is implemented in React and can be found in the [frontend](https://github.com/mcompscis/recipeApp/tree/main/app/frontend) directory
+
+The backend follows the Django framework. The API routes and the backend logic implementation for each API route can be found in the `urls.py` files and `views.py` files for the respective Django apps. Currently, we have two Django apps: [recipes](https://github.com/mcompscis/recipeApp/tree/main/app/recipes) and [users](https://github.com/mcompscis/recipeApp/tree/main/app/users). The recipes app takes care of all routes that have to do with recipes (e.g. searching or creating recipes) whereas the users app takes care of user authentication using Django.
+
+1. **Feature 1**: Users can create a new recipe so that all users of the application can see and search for this new recipe. The frontend sends a POST request to the backend (implemented in [recipe/views.py](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/views.py)) containing all the details for recipe creation. <br>
+The list of ingredients is checked to see if there are any ingredients not already in the Ingredients table. The new ingredients are then inserted into the Ingredients table.<br>
+The following queries are used
+    - [check_ingredients.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/check_ingredients.sql)
+    - [insert_ingredient.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/insert_ingredients.sql)
+
+    <br> The recipe is then inserted into the Recipe table via the following query
+    - [create_recipe.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/create_recipe.sql)  
+
+    <br> The query above returns the recipe_id of the created recipe. The recipe_id is used to populate the RecipeIngredient Table that maps recipes to their ingredients along with the quantity and measurement unit of that ingredient.
+The following query is used for this
+    - [insert_recipe_ingr.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/insert_recipe_ingr.sql)
+
+    <br>The tags for the recipe are then checked to see if there are any new tags. New tags are inserted into the Tags table. The following queries are used
+    - [check_tag.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/check_tag.sql)
+    - [insert_tag.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/insert_tag.sql)
+
+    <br> The relationship between the recipe_id and the tags are then recorded in the RecipeTags table using the following query  
+    - [insert_recipe_tag.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/insert_recipe_tag.sql)
+
+  
+2. **Feature 3**: Return the top-rated recipes on the application’s homepage by ordering by a weighted average rating in a descending order. This feature is useful to display it on the homepage of the application for users to see the top recipes they should try out.   
+The backend passes ‘limit’ and ‘offset’ variables that specify how many recipes should be displayed on one page and which recipe to start on in the next page.  
+The following SQL query is used to implement this feature-
+    - [get_n_recipes.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/get_n_recipes.sql)
+
+3. **Feature 4**: Users can view a webpage that contains all the details of a recipe such as the recipe methodology, description of the recipe, the cuisine, tags and ingredients associated with the recipe.  The frontend passes a recipe_id to the backend based on the recipe hyperlink that the user clicks.   The following query displays the details of a recipe that correspond to a particular recipe_id  
+    - [return_specific_recipe_info.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/return_specific_recipe_info.sql)
+    - [get_reviews.sql](https://github.com/mcompscis/recipeApp/blob/main/app/recipes/recipe_queries/get_reviews.sql)
+
