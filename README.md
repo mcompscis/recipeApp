@@ -54,3 +54,29 @@ The 'app\setup_tables' directory contains python and bash files to deploy the ab
 - create_tables.py creates the sample tables and triggers and can be run using 'python create_tables.py'
 - drop_tables.py drops all sample tables and can be run using 'python drop_tables.py'
 - populate_tables.py populates the sample tables with test data and can be run using 'python populate_tables.py'
+
+## MILESTONE 2
+
+### How to Generate the Production Dataset and Load it Into the Database
+
+#### How to Generate Production Dataset
+
+To generate the production dataset, we downloaded data on recipes scraped from Food.com through this [Kaggle Dataset link](https://www.kaggle.com/shuyangli94/food-com-recipes-and-user-interactions).
+
+The files from the above link consisted of the following important CSV and Pickle files that we used: ingr_map.pkl (which contains the ingredients mapping to ingredient ids), RAW_interactions.csv (a raw table of ratings and reviews), RAW_recipes.csv (a raw tables of data on recipes), and PP_recipes.csv (which had recipes data with ingredient ids that corresponds to the mapping in ingr_map.pkl).
+
+We used all these dataset files and used Python Jupyter Notebooks to extract, clean and transform many of these files into new CSVs.
+
+Some problems faced: 
+1. There were no usernames for the users in the data downloaded from Kaggle.
+2. There was no quantity, measurements and image urls for any of the recipes from the Dataset link.
+
+Solutions for those problems:
+1. We randomly created unique usernames for the users using the Python library names. The creation of the new user table through this random generation was done through this notebook [here](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/create_user_tables_and_experiment_migration.ipynb).
+2. We developed scraping the Python scripts [scrape_img_urls.py](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/scrape_img_urls.py) and [scrape_recipe_measurements.py](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/scrape_recipe_measurements.py) to scrape the columns data that we needed.
+
+
+### How to Load Data into Database
+
+The Python Jupyter Notebook used to load the data into the Database was [migrate_tables.ipynb](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/migrate_tables.ipynb). We have also created a Python script called [populate_prod_tables.py](https://github.com/mcompscis/recipeApp/blob/main/app/setup_tables/populate_prod_tables.py) for it, but we have yet to fully test it.
+
