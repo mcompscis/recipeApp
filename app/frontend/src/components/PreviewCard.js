@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { sizing } from '@material-ui/system';
 var capitalize = require('capitalize')
+import Rating from '@material-ui/lab/Rating';
 import { Switch, Route, Link } from "react-router-dom";
 
 const useStyles = makeStyles({
@@ -30,7 +31,7 @@ const PreviewCard = ({recipe}) => {
 
   const genDescription = (recipe) => {
     if (recipe.description){
-      return recipe.description.length > 100 ? recipe.description.slice(0, 100) + '...' : recipe.description
+      return recipe.description.length > 70 ? recipe.description.slice(0, 70) + '...' : recipe.description
     }
     return ""
   }
@@ -46,9 +47,10 @@ const PreviewCard = ({recipe}) => {
             <Typography gutterBottom variant="h5" component="h2">
               {capitalize.words(recipe.recipe_name)}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p" maxLength={100}>
+            <Typography variant="body2" color="textSecondary" component="p" maxLength={70}>
               {genDescription(recipe)}
             </Typography>
+            <Rating name="read-only" value={recipe.avg_rating}  precision={0.25} readOnly />
           </CardContent>
         </CardActionArea>
       </Card>
