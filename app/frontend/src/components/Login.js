@@ -10,9 +10,12 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {login} from '../reducers/userReducer'
 import { useHistory } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import userService from '../services/user'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -45,13 +48,26 @@ const Login = () => {
   const history = useHistory()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  let user = useSelector(state => state.user)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    try {
-        dispatch(login(username, password))
-        history.push('/')
-    } catch(err) {}
+    const res = await userService.login(username, password)
+    if(!res || !res.data || !res.data.access){
+      toast.error('Wrong username or password', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    else{
+      dispatch(login(res.data))
+      history.push('/')
+    }
   }
 
   return (
@@ -108,6 +124,17 @@ const Login = () => {
             </Link>
           </div> 
         </form>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover
+        />
       </div>
     </Container>
   )

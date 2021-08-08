@@ -4,6 +4,8 @@ import SignUp from "./components/SignUp";
 import Navbar from './components/Navbar';
 import Homepage from './components/Homepage';
 import Recipe from './components/Recipe'
+import UserDetail from './components/UserDetail';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,6 +32,9 @@ const App = () => {
         </Route>
         <Route path='/signup'>
           <SignUp/>
+        </Route>
+        <Route path='/account'>
+          <UserDetail/>
         </Route>
         <Route path='/'>
           <Redirect to="/recipes" />

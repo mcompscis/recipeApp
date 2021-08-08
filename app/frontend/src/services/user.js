@@ -7,9 +7,6 @@ const login = async (username, password) => {
     axiosInstance.defaults.headers['Authorization'] = "JWT " + response.data.access;
     localStorage.setItem('access_token', response.data.access);
     localStorage.setItem('refresh_token', response.data.refresh);
-    const details = jwt_decode(response.data.access)
-    localStorage.setItem('username', details.username)
-    localStorage.setItem('user_id', details.user_id)
     return response;
   }
   catch(error){
