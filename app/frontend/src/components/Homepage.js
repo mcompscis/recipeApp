@@ -40,12 +40,9 @@ const Homepage = () => {
   let searchName = useSelector(state => state.search.name)
   const returnResults = async (page) => {
     if(searchName === ''){
-      recipe.getAmount().then(detail => 
-        setPageCount(detail.num_pages) 
-      )
-      recipe.getList(page).then(recipes =>
-        setRecipeList(recipes)
-      )
+      let res = await recipe.getList(page)
+      setPageCount(res.num_pages) 
+      setRecipeList(res.recipes)
     }
     else {
       let res = await recipe.getSearch(searchName, page)

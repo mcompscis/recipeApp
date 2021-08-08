@@ -13,7 +13,8 @@ import searchReducer from './reducers/searchReducer'
 const persistConfig = {
   key: 'root',
   storage: storage,
-  stateReconciler: autoMergeLevel2 
+  stateReconciler: autoMergeLevel2,
+  blacklist: ['search']
 };
 
 const reducer = combineReducers({
