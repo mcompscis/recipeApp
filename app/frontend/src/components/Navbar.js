@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,7 +10,9 @@ import MenuIcon from  '@material-ui/icons/menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Switch, Route, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
+import {logout} from '../reducers/userReducer'
 import SearchBar from './SearchBar'
+import jwt_decode from "jwt-decode";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,13 +68,24 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const NavBarButtons = () => {
-  const classes = useStyles();
-  let loggedIn = false
-  if(localStorage.getItem('username')){
-    loggedIn = true
-    //let loggedInUser = localStorage.getItem('username')
+  let dispatch = useDispatch()
+  const classes = useStyles()
+  let user = useSelector(state => state.user)
+
+  const expired = (token = user.access_token) => {
+    if (token && jwt_decode(token)) {
+      const expiry = jwt_decode(token).exp
+      const now = new Date()
+      if(now.getTime() > expiry * 1000){
+        dispatch(logout())
+        return true
+      }
+      return false
+    }
+    return false;
   }
-  if (loggedIn){
+
+  if (user.username != null && !expired()){
     return(
       <div className={classes.root}>
          <IconButton
@@ -82,6 +95,8 @@ const NavBarButtons = () => {
               aria-haspopup="true"
               //onClick={handleProfileMenuOpen}
               color="inherit"
+              component={Link} 
+              to={'/account'}
             >
               <AccountCircle />
           </IconButton>

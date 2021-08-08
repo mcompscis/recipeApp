@@ -9,12 +9,11 @@ const axiosInstance = axios.create({
       'accept': 'application/json'
   }
 });
-
+/*
 axiosInstance.interceptors.response.use(
   response => response,
   error => {
     const originalRequest = error.config;
-    
     if (error.response.status === 401 && error.response.statusText === "Unauthorized") {
         const refresh_token = localStorage.getItem('refresh_token');
 
@@ -37,6 +36,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+*/
 
 export default axiosInstance;
