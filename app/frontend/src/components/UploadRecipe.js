@@ -13,9 +13,11 @@ import CheckIcon from "@material-ui/icons/Check";
 const humanizeDuration = require("humanize-duration");
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-import axiosInstance from "../services/axiosApi";
 import recipe from '../services/recipe'
-import { async } from "regenerator-runtime";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import IngredientInput from "./IngredientInput"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles(theme => ({
   uploadBtn: {
@@ -24,6 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginRight: theme.spacing(1),
+    marginTop: "3vw",
     width: 200
   },
   wrapper: {
@@ -59,6 +62,8 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   const [newCalories, setCalories] = useState(100);
   const [newCuisine, setCuisine] = useState('');
   const [newPrepTime, setPrepTime] = useState(90);
+  const [autoCompleteValue, setAutoCompleteValue] = useState([]);
+  const [ingredientRows, setIngredientRows] = useState([{}])
 
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -83,18 +88,36 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       "time_to_prepare": newPrepTime,
       "img_url": "",
       "serves": newServes,
-      "ingredient_names": [],
-      "quantities": [],
-      "measurement_units": [],
+      "ingredient_names": ingredientRows.map(row => row.ingredient),
+      "quantities": ingredientRows.map(row => row.quantity),
+      "measurement_units": ingredientRows.map(row => row.measurement),
       "cuisine_name": newCuisine,
-      "tags": []
+      "tags": autoCompleteValue
     };
+    console.log(jsonObj)
     try {
       const response = await recipe.postRecipe(jsonObj);
+      toast.success('Submitted Recipe', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return response;
     } 
     catch (error) {
-        
+      toast.error('Error Submitting Recipe', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   }
 
@@ -127,7 +150,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             defaultValue={newServes}
             margin="normal"
             id="serves"
-            label="serves"
+            label="Serves"
             type="number"
             onChange={event => setServes(event.target.value)}
           />
@@ -149,27 +172,13 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             type="number"
             onChange={event => setPrepTime(event.target.value)}
           />
-          <TextField
+          <Autocomplete
             className={classes.textField}
-            defaultValue={newCuisine}
-            id="standard-select-currency-native"
-            select
-            label="Cuisine"
-            onChange={event => setCuisine(event.target.value)}
-            SelectProps={{
-              native: true,
-              MenuProps: {
-                style: { width: 500 }
-              }
-            }}
-            margin="normal"
-          >
-            {["indian", "chinese", "mcdonalds"].map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </TextField>
+            id="combo-box-demo"
+            options={["indian", "chinese", "mcdonalds"]}
+            onChange={(event, value) => setCuisine(value)}
+            renderInput={(params) => <TextField {...params} label="Cuisine" />}
+          />
         </div>
         <TextField
           margin="normal"
@@ -189,6 +198,30 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           multiline
           onChange={event => setNewDescription(event.target.value)}
         />
+        <br/>
+        <br/>
+      <Autocomplete
+        multiple
+        id="tags-outlined"
+        options={["foo", "bar"]}
+        value={autoCompleteValue}
+        onChange={(e, newval, reason) => {
+          setAutoCompleteValue(newval);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            label="Tags"
+            onKeyDown={(e) => {
+              if (e.keyCode === 13 && e.target.value) {
+                setAutoCompleteValue(autoCompleteValue.concat(e.target.value));
+              }
+            }}
+          />
+        )}
+      />
+      <IngredientInput setRows={setIngredientRows} rows={ingredientRows}/>
       </DialogContent>
       <DialogActions>
         <div className={classes.uploadBtn}>
@@ -217,6 +250,17 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           )}
         </div>
       </DialogActions>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover
+        />
     </Dialog>
   );
 }

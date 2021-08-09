@@ -1,7 +1,8 @@
 import axiosInstance from "./axiosApi";
 import axios from 'axios'
 
-const baseUrl = 'http://ubuntu2004-002.student.cs.uwaterloo.ca:8000/api/recipes'
+//const baseUrl = 'http://ubuntu2004-002.student.cs.uwaterloo.ca:8000/api/recipes'
+const baseUrl = 'http://localhost:8000/api/recipes'
 
 const getList = async (pageNumber) => {
   const response = await axios.get(baseUrl + `/get-recipes?page=${pageNumber}`)
