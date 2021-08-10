@@ -22,7 +22,7 @@ FROM   (SELECT tag_text,
                        ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
-WHERE  tag_text = %(tag_text)s
+WHERE  tag_text IN %(tag_texts)s
 AND cuisine_name = %(cuisine_name)s) T
 ORDER  BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
 LIMIT  %(limit_val)s

@@ -104,9 +104,38 @@ class GetRecipeReviewsAPIView(APIView):
 
 
 class SearchRecipeBasedOnIngredientsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
     def get(self, request):
-        #TODO
-        pass
+        page_num = request.query_params.get('page')
+        included_ingr = request.query_params.get('included_ingredients').split(",")
+        included_ingr = tuple(included_ingr)
+        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
+        excluded_ingr = tuple(excluded_ingr)
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipes_by_ingredients.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        offset = (page_num - 1) * limit
+
+        exec = exec_query(query_text, {'exclude_ingredients': excluded_ingr, 'include_ingredients':included_ingr, 'offset_val': offset, 'limit_val': limit})
+        return JsonResponse(exec, safe=False)
+
+class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        page_num = request.query_params.get('page')
+        tags = request.query_params.get('tags').split(",")
+        tags = tuple(tags)
+        cuisine = request.query_params.get('cuisine')
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipes_by_ingredients.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        offset = (page_num - 1) * limit
+
+        exec = exec_query(query_text, {'cuisine_name':cuisine, 'tag_texts':tags, 'offset_val': offset, 'limit_val': limit})
+        return JsonResponse(exec, safe=False)
+
 
 
 class CreateRecipeAPIView(APIView):

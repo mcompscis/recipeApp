@@ -13,8 +13,10 @@ FROM (
 			SELECT DISTINCT (ri.recipe_id)
 			FROM Ingredient AS i
 			INNER JOIN RecipeIngredient AS ri ON i.ingredient_id = ri.ingredient_id
-			WHERE i.ingredient_name LIKE %(exclude_ingredient_1)s
+			WHERE i.ingredient_name IN %(exclude_ingredients)s
 		)
-              AND ingredient_name LIKE %(include_ingredient_1)s
+              AND ingredient_name IN %(include_ingredients)s
 ) T
-ORDER BY recipe_name;
+ORDER BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
+LIMIT  %(limit_val)s
+OFFSET %(offset_val)s;
