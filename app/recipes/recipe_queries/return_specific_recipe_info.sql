@@ -33,27 +33,31 @@ FROM   (SELECT R.recipe_id,
                GROUP_CONCAT(ingredient_name)  AS ingredients,
                GROUP_CONCAT(quantity)         AS quantities,
                GROUP_CONCAT(measurement_unit) AS measurement_units
-        FROM   Recipe R,
-               RecipeIngredient RI,
-               Ingredient I,
-               Cuisine C
-        WHERE  ( R.recipe_id = (%(pk)s) )
-               AND ( R.recipe_id = RI.recipe_id )
-               AND ( RI.ingredient_id = I.ingredient_id )
-               AND ( R.cuisine_id = C.cuisine_id )
-        GROUP  BY C.cuisine_name,
+       FROM (SELECT * FROM Recipe WHERE recipe_id = %(pk)s ) R
+       LEFT JOIN
+       RecipeIngredient RI
+       ON R.recipe_id = RI.recipe_id
+       LEFT JOIN
+       Ingredient I
+       ON RI.ingredient_id = I.ingredient_id
+       LEFT JOIN
+       Cuisine C
+       ON R.cuisine_id = C.cuisine_id
+       GROUP  BY C.cuisine_name,
                   R.description,
                   R.recipe_text,
                   R.calories,
                   R.avg_rating,
                   R.time_to_prepare,
                   R.num_ratings,
-                  R.img_url) T1,
-       RecipeTag RT,
+                  R.img_url) T1
+       LEFT JOIN
+       RecipeTag RT
+       ON T1.recipe_id = RT.recipe_id
+       LEFT JOIN
        Tag T
-WHERE  ( T1.recipe_id = RT.recipe_id )
-       AND ( RT.tag_id = T.tag_id )
-GROUP  BY T1.recipe_id,
+       ON RT.tag_id = T.tag_id
+GROUP BY T1.recipe_id,
           T1.recipe_name,
           T1.serves,
           T1.date_submitted,

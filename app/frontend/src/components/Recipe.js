@@ -31,15 +31,15 @@ const Recipe = () => {
       <img src={recipeDetail.img_url}></img>
       <p>Calories: {recipeDetail.calories}</p>
       <p>Cuisine: {recipeDetail.cuisine_name}</p>
-      <p>Date: submitted: {recipeDetail.date_submitted}</p>
+      <p>Date submitted: {recipeDetail.date_submitted}</p>
       <p>Description: {recipeDetail.description}</p>
       <p>Ingredients: {recipeDetail.ingredients}</p>
       <p>Measurement Units: {recipeDetail.measurement_units}</p>
-      <p>Num Raings: {recipeDetail.num_ratings}</p>
-      <p>Quanitities: {recipeDetail.quantities}</p>
+      <p>Num Ratings: {recipeDetail.num_ratings}</p>
+      <p>Quantities: {recipeDetail.quantities}</p>
       <p>Recipe Text: {recipeDetail.recipe_text}</p>
       <p>Serves: {recipeDetail.serves}</p>
-      <p>Tag Text: {recipeDetail.tag_text}</p>
+      <p>Tags: {recipeDetail.tag_text}</p>
       <p>Time to Prepare: {recipeDetail.time_to_prepare}</p>
     </Container>
   )

@@ -243,7 +243,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             disabled={loading}
             onClick={() => handleSave()}
           >
-            {success ? <CheckIcon /> : "Save"}
+            {success ? <CheckIcon /> : "Submit Recipe"}
           </Button>
           {loading && (
             <CircularProgress size={24} className={classes.buttonProgress} />

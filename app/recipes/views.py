@@ -1,3 +1,4 @@
+from re import search
 from django.http import HttpResponse, JsonResponse
 from setup_tables.query_manager import exec_query
 import os
@@ -31,14 +32,15 @@ class RecipeDetailAPIView(APIView):
         queryPath = os.path.join(os.path.dirname( __file__ ), 'recipe_queries/return_specific_recipe_info.sql')
         with open(queryPath, 'r') as file:
             queryText = file.read()
-        return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
+        response = exec_query(queryText, {'pk': pk})
+        return JsonResponse(response, safe=False)
 
 class GetRecipesAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_n_recipes.sql')
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_top_imdb_recipes_based_on_limit_offset.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
         offset = (page_num - 1) * limit
@@ -84,6 +86,9 @@ class SearchRecipeAPIView(APIView):
                                       {'recipe_name': recipe_name, 
                                        'offset_val': offset, 
                                        'limit_val': limit})
+        if type(searched_results) == dict:
+            searched_results = [searched_results]
+        print(searched_results)
         return JsonResponse({"key_results": searched_results,
                              "num_pages": math.ceil(float(exec1["CNT"]/limit))}, safe=False)
 
@@ -106,15 +111,14 @@ class GetRecipeReviewsAPIView(APIView):
 class SearchRecipeBasedOnIngredientsAPIView(APIView):
     def get(self, request):
         #TODO
-        pass
+        ...
 
 
 class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
-        print('recipe invokedddddddddddddd')
         data = JSONParser().parse(request)
-
+        print(data)
         #Inserting Ingredients into Ingredient table if not exists
         recipe_name = data["recipe_name"]
         print(request.user.user_id)
