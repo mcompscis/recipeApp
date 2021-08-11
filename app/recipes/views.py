@@ -175,19 +175,23 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
     def get(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        tags_str = "NULL"
-        cuisines_str = "NULL"
+        tags_str = "(1)"
+        cuisines_str = "(1)"
+        tag_query_param_is_null = "YES"
+        cuisine_query_param_is_null = "YES"
         tags_query_param = request.query_params.get('tags')
         cuisines_query_param = request.query_params.get('cuisines')
         
         if tags_query_param is not None:
             tags_lst = tags_query_param.split(",")
             tags_str = convert_lst_of_str_to_str_tuple(tags_lst)
+            tag_query_param_is_null = "NO"
 
         if cuisines_query_param is not None:
             cuisines_lst = cuisines_query_param.split(",")
             cuisines_str = convert_lst_of_str_to_str_tuple(cuisines_lst)
-    
+            cuisine_query_param_is_null = "NO"
+        
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_tags_and_cuisine.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
@@ -198,7 +202,9 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
         print(query_text)
         offset = (page_num - 1) * limit
 
-        exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit})
+        exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit,
+                                       "tag_query_param_is_null": tag_query_param_is_null,
+                                       "cuisine_query_param_is_null": cuisine_query_param_is_null})
         
 
         return JsonResponse(exec, safe=False)
