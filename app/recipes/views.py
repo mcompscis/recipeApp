@@ -123,12 +123,33 @@ class GetRecipeReviewsAPIView(APIView):
 class SearchRecipeBasedOnIngredientsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
+        return self.getv2(request)
+    
+    def getv1(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
         included_ingr = request.query_params.get('included_ingredients').split(",")
         excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
-        # included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr)
-        # excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr)
+        included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr)
+        excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr)
+
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+            
+        offset = (page_num - 1) * limit
+        query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
+        query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
+        exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit})
+        return JsonResponse(exec, safe=False)
+    
+
+    
+    def getv2(self, request):
+        page_num = request.query_params.get('page')
+        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
+        included_ingr = request.query_params.get('included_ingredients').split(",")
+        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
 
         included_ingr_str = " ".join(included_ingr)
         excluded_ingr_str = " ".join(excluded_ingr)
@@ -138,16 +159,13 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
             query_text = file.read()
             
         offset = (page_num - 1) * limit
-        # TODO: Decide which version of search_recipe_by_ingredient should be used.
-        
-        # query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
-        # query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
-        print(query_text)
         exec = exec_query(query_text, {
             'include_ingredients': included_ingr_str,
             "exclude_ingredients": excluded_ingr_str,
             'offset_val': offset, 'limit_val': limit})
         return JsonResponse(exec, safe=False)
+    
+
 
     def post(self, request, format="json"):
         ...
