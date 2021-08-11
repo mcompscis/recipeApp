@@ -13,10 +13,12 @@ FROM (
 			FROM Ingredient I
 			INNER JOIN RecipeIngredient RI 
 			ON I.ingredient_id = RI.ingredient_id
-			WHERE I.ingredient_name IN %(exclude_ingredients)s
+			WHERE MATCH (I.ingredient_name) AGAINST(%(exclude_ingredients)s)
 		)
-            AND ingredient_name IN %(include_ingredients)s
+            AND MATCH (ingredient_name) AGAINST(%(include_ingredients)s)
 ) T
 ORDER BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;
+
+

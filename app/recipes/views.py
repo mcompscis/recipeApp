@@ -17,6 +17,22 @@ from rest_framework.parsers import JSONParser
 
 limit = 48
 
+def convert_lst_of_str_to_str_tuple(lst):
+    """
+    Converts a list of strings into a string representing the tuple(list(str))
+
+    Examples:
+    Input: ["a", "b"], Output: "('a', 'b')"
+    Input: ["a"], Output: "('a')"
+    
+    This function is used for SQL queries with WHERE IN and WHERE NOT IN
+    when a list of strings is needed to be passed to the SQL query
+    """
+    
+    output = str(tuple(lst))
+    output = output if (output[-2] != ",") else output[:-2] + ")"
+    return output
+    
 class TopFiveAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
@@ -84,6 +100,7 @@ class SearchRecipeAPIView(APIView):
                                       {'recipe_name': recipe_name, 
                                        'offset_val': offset, 
                                        'limit_val': limit})
+        print(searched_results)
         return JsonResponse({"key_results": searched_results,
                              "num_pages": math.ceil(float(exec1["CNT"]/limit))}, safe=False)
 
@@ -107,22 +124,50 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
-        included_ingr = request.query_params.get('included_ingredients').split(",")
-        included_ingr = tuple(included_ingr)
-        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
-        excluded_ingr = tuple(excluded_ingr)
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipes_by_ingredients.sql')
+        included_ingr = request.query_params.get('included_ingredients').split(",")
+        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
+        # included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr)
+        # excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr)
+
+        included_ingr_str = " ".join(included_ingr)
+        excluded_ingr_str = " ".join(excluded_ingr)
+
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient_v2.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
+            
         offset = (page_num - 1) * limit
-
-        exec = exec_query(query_text, {'exclude_ingredients': excluded_ingr, 'include_ingredients':included_ingr, 'offset_val': offset, 'limit_val': limit})
+        # TODO: Decide which version of search_recipe_by_ingredient should be used.
+        
+        # query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
+        # query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
+        print(query_text)
+        exec = exec_query(query_text, {
+            'include_ingredients': included_ingr_str,
+            "exclude_ingredients": excluded_ingr_str,
+            'offset_val': offset, 'limit_val': limit})
         return JsonResponse(exec, safe=False)
 
+    def post(self, request, format="json"):
+        ...
+        # data = JSONParser().parse(request)
+        # page_num = data["page"]
+        # included_ingr = data["included_ingredients"]
+        # excluded_ingr = data["excluded_ingredients"]
+        # query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
+        # with open(query_path, 'r') as file:
+        #     query_text = file.read()
+        # offset = (page_num - 1) * limit
+        # exec = exec_query(query_text, {'exclude_ingredients': excluded_ingr, 
+        #                                'include_ingredients':included_ingr, 
+        #                                'offset_val': offset, 'limit_val': limit})
+        # return JsonResponse(exec, safe=False)
+
+    
 class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
-    def get(self, request):
+    def post(self, request):
         page_num = request.query_params.get('page')
         tags = request.query_params.get('tags').split(",")
         tags = tuple(tags)
@@ -141,7 +186,7 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
 class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
-        print('recipe invokedddddddddddddd')
+        print('Create recipe invoked')
         data = JSONParser().parse(request)
 
         #Inserting Ingredients into Ingredient table if not exists
