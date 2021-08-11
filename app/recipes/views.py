@@ -123,15 +123,16 @@ class GetRecipeReviewsAPIView(APIView):
 class SearchRecipeBasedOnIngredientsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
-        return self.getv2(request)
-    
-    def getv1(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        included_ingr = request.query_params.get('included_ingredients').split(",")
-        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
-        included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr)
-        excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr)
+        included_ingr_lst = request.query_params.get('included_ingredients').split(",")
+        excluded_ingr_lst = request.query_params.get('excluded_ingredients').split(",")
+
+        return JsonResponse(self.query_v2(page_num, included_ingr_lst, excluded_ingr_lst), safe=False)
+    
+    def query_v1(self, page_num, included_ingr_lst, excluded_ingr_lst):
+        included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)
+        excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
 
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
         with open(query_path, 'r') as file:
@@ -141,18 +142,12 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
         query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
         query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
         exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit})
-        return JsonResponse(exec, safe=False)
+        return exec
     
 
-    
-    def getv2(self, request):
-        page_num = request.query_params.get('page')
-        page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        included_ingr = request.query_params.get('included_ingredients').split(",")
-        excluded_ingr = request.query_params.get('excluded_ingredients').split(",")
-
-        included_ingr_str = " ".join(included_ingr)
-        excluded_ingr_str = " ".join(excluded_ingr)
+    def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst):
+        included_ingr_str = " ".join(included_ingr_lst)
+        excluded_ingr_str = " ".join(excluded_ingr_lst)
 
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient_v2.sql')
         with open(query_path, 'r') as file:
@@ -163,25 +158,14 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
             'include_ingredients': included_ingr_str,
             "exclude_ingredients": excluded_ingr_str,
             'offset_val': offset, 'limit_val': limit})
-        return JsonResponse(exec, safe=False)
-    
-
+        return exec
 
     def post(self, request, format="json"):
-        ...
-        # data = JSONParser().parse(request)
-        # page_num = data["page"]
-        # included_ingr = data["included_ingredients"]
-        # excluded_ingr = data["excluded_ingredients"]
-        # query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
-        # with open(query_path, 'r') as file:
-        #     query_text = file.read()
-        # offset = (page_num - 1) * limit
-        # exec = exec_query(query_text, {'exclude_ingredients': excluded_ingr, 
-        #                                'include_ingredients':included_ingr, 
-        #                                'offset_val': offset, 'limit_val': limit})
-        # return JsonResponse(exec, safe=False)
-
+        data = JSONParser().parse(request)
+        page_num = data["page"]
+        included_ingr_lst = data["included_ingredients"]
+        excluded_ingr_lst = data["excluded_ingredients"]
+        return JsonResponse(self.query_v1(page_num, included_ingr_lst, excluded_ingr_lst), safe=False)
     
 class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
