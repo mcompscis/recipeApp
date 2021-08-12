@@ -17,7 +17,7 @@ FROM (
 		)
             AND ((%(included_ingr_lst_is_null)s = "Y") OR (MATCH (ingredient_name) AGAINST(%(include_ingredients)s)))
 ) T
-ORDER BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
+ORDER BY avg_rating DESC, num_ratings DESC
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;
 

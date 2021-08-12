@@ -24,8 +24,8 @@ FROM   (SELECT tag_text,
                        ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
-WHERE  ((%(tag_query_param_is_null)s = "Y") OR (tag_text IN %(tag_texts)s))
-AND ((%(cuisine_query_param_is_null)s = "Y") OR (cuisine_name IN %(cuisine_names)s))) T
-ORDER  BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
+WHERE  ((%(tag_query_param_is_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
+AND ((%(cuisine_query_param_is_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
+ORDER BY avg_rating DESC, num_ratings DESC
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;
