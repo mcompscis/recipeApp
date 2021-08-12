@@ -43,4 +43,9 @@ const getCuisines = async () => {
   return response.data
 }
 
-export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines }
+const getIngredients = async () => {
+  const response = await axios.get(baseUrl + `/get-ingredients/`)
+  return response.data
+}
+
+export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines, getIngredients }
