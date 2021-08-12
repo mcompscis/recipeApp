@@ -12,7 +12,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import {logout} from '../reducers/userReducer'
 import SearchBar from './SearchBar'
-import jwt_decode from "jwt-decode";
+import jwt_decode from "jwt-decode"
 
 const useStyles = makeStyles(theme => ({
   root: {

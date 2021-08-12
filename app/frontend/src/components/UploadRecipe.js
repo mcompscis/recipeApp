@@ -77,6 +77,20 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     }
   }, [success]);
 
+  const clearState = () => {
+    setNewName('New Recipe')
+    setServes(1)
+    setPreparation('')
+    setNewDescription('')
+    setCalories(100)
+    setCuisine('')
+    setPrepTime(90)
+    setAutoCompleteValue([])
+    setIngredientRows([])
+    setIngredientRows([{}])
+    setImage({})
+  }
+
   //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
 
   const handleSave = async() => {
@@ -98,7 +112,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     bodyFormData.append('file', image)
     console.log(Object.fromEntries(bodyFormData))
     try {
-      const response = await recipe.postRecipe(bodyFormData);
+      const response = await recipe.postRecipe(bodyFormData)
       toast.success('Submitted Recipe', {
         position: "top-right",
         autoClose: 3000,
@@ -107,10 +121,12 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      });
-      return response;
+      })
+      clearState
+      return response
     } 
     catch (error) {
+      clearState()
       toast.error('Error Submitting Recipe', {
         position: "top-right",
         autoClose: 3000,
@@ -119,7 +135,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      });
+      })
     }
   }
 
@@ -137,7 +153,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       </DialogTitle>
       <DialogContent>
         <TextField
-          defaultValue={newName}
+          value={newName}
           autoFocus
           margin="normal"
           id="name"
@@ -149,7 +165,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         <div style={{ display: "flex", justifyContent: "flex-start" }}>
           <TextField
             className={classes.textField}
-            defaultValue={newServes}
+            value={newServes}
             margin="normal"
             id="serves"
             label="Serves"
@@ -158,7 +174,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           />
           <TextField
             className={classes.textField}
-            defaultValue={newCalories}
+            value={newCalories}
             margin="normal"
             id="calories"
             label="Calories"
@@ -167,7 +183,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           />
           <TextField
             className={classes.textField}
-            defaultValue={newPrepTime}
+            value={newPrepTime}
             margin="normal"
             id="preptime"
             label="Prep Time (mins)"
@@ -177,6 +193,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           <Autocomplete
             className={classes.textField}
             id="combo-box-demo"
+            value={newCuisine}
             options={["indian", "chinese", "mcdonalds"]}
             onChange={(event, value) => setCuisine(value)}
             renderInput={(params) => <TextField {...params} label="Cuisine" />}
@@ -187,6 +204,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           id="preparation"
           label="Preparation Instructions"
           type="text"
+          value={newPreparation}
           fullWidth
           multiline
           onChange={event => setPreparation(event.target.value)}
@@ -196,6 +214,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           id="description"
           label="Description (optional)"
           type="text"
+          value={newDescription}
           fullWidth
           multiline
           onChange={event => setNewDescription(event.target.value)}

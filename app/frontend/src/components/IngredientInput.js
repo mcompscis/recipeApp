@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 const IngredientRow = ({index, setRows, rows}) => {
   const classes = useStyles()
-  const [quantity, setQuantity] = useState(0)
+  const [quantity, setQuantity] = useState("")
   const [measurement, setMeasurement] = useState("")
   const [ingredient, setIngredient] = useState("")
 
@@ -61,6 +61,7 @@ const IngredientRow = ({index, setRows, rows}) => {
             id="combo-box-demo"
             className={classes.textField}
             options={measurements}
+            value={measurement}
             onChange={event => setCuisine(event.target.value)}
             renderInput={(params) => <TextField {...params} label="Measurement" />}
             onChange={(event, value) => newMeasurement(value)}
@@ -68,6 +69,7 @@ const IngredientRow = ({index, setRows, rows}) => {
       <TextField 
           className={classes.textField} 
           required label="Ingredient"  
+          value={ingredient}
           onChange={event => newIngredient(event.target.value)}/>
     </div>
   )
