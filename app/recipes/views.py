@@ -228,13 +228,28 @@ class AdvancedSearchAPIView(APIView):
             'offset_val': offset, 'limit_val': limit})
         return exec
 
-    def post(self, request, format="json"):
-        data = JSONParser().parse(request)
-        page_num = data["page"]
-        included_ingr_lst = data["included_ingredients"]
-        excluded_ingr_lst = data["excluded_ingredients"]
-        return JsonResponse(self.query_v1(page_num, included_ingr_lst, excluded_ingr_lst), safe=False)
-    
+
+class GetCuisinesAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_cuisines.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        
+        exec = exec_query(query_text)
+        return JsonResponse(exec, safe=False)
+
+class GetTagsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_cuisines.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        
+        exec = exec_query(query_text)
+        return JsonResponse(exec, safe=False)
+
+          
     
 class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)

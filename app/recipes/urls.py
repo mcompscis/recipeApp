@@ -10,6 +10,6 @@ urlpatterns = [
     path("get-reviews/", views.GetRecipeReviewsAPIView.as_view()),
     path("search-recipe/", views.SearchRecipeAPIView.as_view()),
     path("advanced-search", views.AdvancedSearchAPIView.as_view()),
-    path("search-recipe-by-cuisines-tags/", views.SearchRecipeBasedOnCuisineAndTagsAPIView.as_view())
-
+    path("search-recipe-by-cuisines-tags/", views.SearchRecipeBasedOnCuisineAndTagsAPIView.as_view()),
+    path("get-cuisines/", views.GetCuisinesAPIView.as_view())
 ]

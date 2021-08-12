@@ -1,0 +1,1 @@
+SELECT cuisine_name FROM Cuisine;

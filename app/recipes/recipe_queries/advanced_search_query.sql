@@ -25,9 +25,9 @@ FROM
 			FROM Ingredient I
 			INNER JOIN RecipeIngredient RI 
 			ON I.ingredient_id = RI.ingredient_id
-			WHERE ((%(excluded_ingr_lst_is_null)s IS NOT NULL) AND (MATCH (I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
+			WHERE ((%(excluded_ingr_lst_is_null)s IS NOT NULL) AND (MATCH(I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
 		)
-            AND ((%(included_ingr_lst_is_null)s IS NULL) OR (MATCH (ingredient_name) AGAINST(%(include_ingredients)s)))
+            AND ((%(included_ingr_lst_is_null)s IS NULL) OR (MATCH(ingredient_name) AGAINST(%(include_ingredients)s)))
 ) r
                        ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
