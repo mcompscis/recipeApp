@@ -166,7 +166,7 @@ class AdvancedSearchAPIView(APIView):
             excluded_ingr_lst = excluded_ingredients.split(",")
             excluded_ingr_lst_is_null = "N"
             
-        return JsonResponse(self.query_v2(page_num, included_ingr_lst, excluded_ingr_lst, 
+        return JsonResponse(self.query_v1(page_num, included_ingr_lst, excluded_ingr_lst, 
                                           included_ingr_lst_is_null, excluded_ingr_lst_is_null,
                                           tags_str,
                                           cuisines_str,
@@ -217,7 +217,6 @@ class AdvancedSearchAPIView(APIView):
         query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
         query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
         query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
-        print(query_text)
             
         offset = (page_num - 1) * limit
         exec = exec_query(query_text, {
@@ -249,7 +248,16 @@ class GetTagsAPIView(APIView):
         exec = exec_query(query_text)
         return JsonResponse(exec, safe=False)
 
-          
+class GetIngredientsAPIView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request):
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_ingredient_names.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        
+        exec = exec_query(query_text)
+        return JsonResponse(exec, safe=False)
+
     
 class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
