@@ -130,7 +130,7 @@ class GetRecipeReviewsAPIView(APIView):
         return JsonResponse(exec, safe=False)
 
 
-class SearchRecipeBasedOnIngredientsAPIView(APIView):
+class AdvancedSearchAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
         page_num = request.query_params.get('page')
@@ -172,31 +172,18 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
                                           cuisines_str,
                                           tag_query_param_is_null, cuisine_query_param_is_null,), safe=False)
     
-    def query_v1(self, page_num, included_ingr_lst, excluded_ingr_lst):
-        included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)
-        excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
-
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
-        with open(query_path, 'r') as file:
-            query_text = file.read()
-        
-        
-        offset = (page_num - 1) * limit
-        query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
-        query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
-        exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit})
-        return exec
     
 
-    def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
+    def query_v1(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  included_ingr_lst_is_null, excluded_ingr_lst_is_null,
                  tags_str, cuisines_str, tag_query_param_is_null, cuisine_query_param_is_null):
+        
         included_ingr_str = " ".join(included_ingr_lst)
         excluded_ingr_str = " ".join(excluded_ingr_lst)
         
         
 
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient_v3.sql')
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
             
@@ -210,6 +197,32 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
             "excluded_ingr_lst_is_null": excluded_ingr_lst_is_null,
             'include_ingredients': included_ingr_str,
             "exclude_ingredients": excluded_ingr_str,
+            "tag_query_param_is_null": tag_query_param_is_null,
+            "cuisine_query_param_is_null": cuisine_query_param_is_null,
+            'offset_val': offset, 'limit_val': limit})
+        return exec
+
+    def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
+                 included_ingr_lst_is_null, excluded_ingr_lst_is_null,
+                 tags_str, cuisines_str, tag_query_param_is_null, cuisine_query_param_is_null):
+
+        included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)  
+        excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
+
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query_v2.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+            
+        query_text = query_text.replace("%(tag_texts)s", tags_str)
+        query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
+        query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
+        query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
+        print(query_text)
+            
+        offset = (page_num - 1) * limit
+        exec = exec_query(query_text, {
+            "included_ingr_lst_is_null": included_ingr_lst_is_null,
+            "excluded_ingr_lst_is_null": excluded_ingr_lst_is_null,
             "tag_query_param_is_null": tag_query_param_is_null,
             "cuisine_query_param_is_null": cuisine_query_param_is_null,
             'offset_val': offset, 'limit_val': limit})

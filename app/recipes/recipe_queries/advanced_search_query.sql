@@ -34,7 +34,6 @@ FROM
                        ON r.cuisine_id = c.cuisine_id
 WHERE  ((%(tag_query_param_is_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
 AND ((%(cuisine_query_param_is_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
-ORDER BY avg_rating DESC, num_ratings DESC
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;
 
