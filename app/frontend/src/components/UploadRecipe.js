@@ -18,6 +18,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import IngredientInput from "./IngredientInput"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+var capitalize = require('capitalize')
 
 const useStyles = makeStyles(theme => ({
   uploadBtn: {
@@ -69,6 +70,20 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [cuisines, setCuisines] = useState([])
+  const [tags, setTags] = useState([])
+
+  useEffect(() => {    
+    recipe.getCuisines().then(res =>
+      setCuisines(res.map(res => res.cuisine_name))
+    )
+
+    recipe.getTags().then(res =>
+      setTags(res.map(res => res.tag_text))
+    )
+
+  }, [])
+
   useEffect(() => {
     if (success) {
       setTimeout(() => {
@@ -110,7 +125,6 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     }
     bodyFormData.append('data', JSON.stringify(data))
     bodyFormData.append('file', image)
-    console.log(Object.fromEntries(bodyFormData))
     try {
       const response = await recipe.postRecipe(bodyFormData)
       toast.success('Submitted Recipe', {
@@ -194,7 +208,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             className={classes.textField}
             id="combo-box-demo"
             value={newCuisine}
-            options={["indian", "chinese", "mcdonalds"]}
+            options={cuisines}
             onChange={(event, value) => setCuisine(value)}
             renderInput={(params) => <TextField {...params} label="Cuisine" />}
           />
@@ -224,7 +238,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       <Autocomplete
         multiple
         id="tags-outlined"
-        options={["foo", "bar"]}
+        options={tags}
         value={autoCompleteValue}
         onChange={(e, newval, reason) => {
           setAutoCompleteValue(newval);
