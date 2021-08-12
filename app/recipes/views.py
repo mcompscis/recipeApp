@@ -127,12 +127,28 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
     def get(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        included_ingr_lst = ["1"]
-        excluded_ingr_lst = ["2"]
-        included_ingr_lst_is_null = "Y"
-        excluded_ingr_lst_is_null = "Y"
+        included_ingr_lst = ["random"]
+        excluded_ingr_lst = ["random"]
+        included_ingr_lst_is_null = None
+        excluded_ingr_lst_is_null = None
         included_ingredients = request.query_params.get('included_ingredients')
         excluded_ingredients = request.query_params.get('excluded_ingredients')
+        tags_str = "('random')"
+        cuisines_str = "('random')"
+        tag_query_param_is_null = None
+        cuisine_query_param_is_null = None
+        tags_query_param = request.query_params.get('tags')
+        cuisines_query_param = request.query_params.get('cuisines')
+        
+        if tags_query_param is not None:
+            tags_lst = tags_query_param.split(",")
+            tags_str = convert_lst_of_str_to_str_tuple(tags_lst)
+            tag_query_param_is_null = "N"
+
+        if cuisines_query_param is not None:
+            cuisines_lst = cuisines_query_param.split(",")
+            cuisines_str = convert_lst_of_str_to_str_tuple(cuisines_lst)
+            cuisine_query_param_is_null = "N"
         
         if included_ingredients:
             included_ingr_lst = included_ingredients.split(",")
@@ -142,7 +158,11 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
             excluded_ingr_lst = excluded_ingredients.split(",")
             excluded_ingr_lst_is_null = "N"
             
-        return JsonResponse(self.query_v2(page_num, included_ingr_lst, excluded_ingr_lst, included_ingr_lst_is_null, excluded_ingr_lst_is_null), safe=False)
+        return JsonResponse(self.query_v2(page_num, included_ingr_lst, excluded_ingr_lst, 
+                                          included_ingr_lst_is_null, excluded_ingr_lst_is_null,
+                                          tags_str,
+                                          cuisines_str,
+                                          tag_query_param_is_null, cuisine_query_param_is_null,), safe=False)
     
     def query_v1(self, page_num, included_ingr_lst, excluded_ingr_lst):
         included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)
@@ -151,7 +171,8 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
-            
+        
+        
         offset = (page_num - 1) * limit
         query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
         query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
@@ -159,13 +180,21 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
         return exec
     
 
-    def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, included_ingr_lst_is_null, excluded_ingr_lst_is_null):
+    def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
+                 included_ingr_lst_is_null, excluded_ingr_lst_is_null,
+                 tags_str, cuisines_str, tag_query_param_is_null, cuisine_query_param_is_null):
         included_ingr_str = " ".join(included_ingr_lst)
         excluded_ingr_str = " ".join(excluded_ingr_lst)
+        
+        
 
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient_v2.sql')
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/search_recipe_by_ingredient_v3.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
+            
+        query_text = query_text.replace("%(tag_texts)s", tags_str)
+        query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
+
             
         offset = (page_num - 1) * limit
         exec = exec_query(query_text, {
@@ -173,6 +202,8 @@ class SearchRecipeBasedOnIngredientsAPIView(APIView):
             "excluded_ingr_lst_is_null": excluded_ingr_lst_is_null,
             'include_ingredients': included_ingr_str,
             "exclude_ingredients": excluded_ingr_str,
+            "tag_query_param_is_null": tag_query_param_is_null,
+            "cuisine_query_param_is_null": cuisine_query_param_is_null,
             'offset_val': offset, 'limit_val': limit})
         return exec
 
@@ -191,8 +222,8 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
         tags_str = "(1)"
         cuisines_str = "(1)"
-        tag_query_param_is_null = "Y"
-        cuisine_query_param_is_null = "Y"
+        tag_query_param_is_null = None
+        cuisine_query_param_is_null = None
         tags_query_param = request.query_params.get('tags')
         cuisines_query_param = request.query_params.get('cuisines')
         
