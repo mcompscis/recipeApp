@@ -14,6 +14,15 @@ from rest_framework import (status,
                             )
 
 from rest_framework.parsers import JSONParser
+import json
+
+from django.core.files.storage import default_storage
+from datetime import datetime
+
+
+s3_bucket = "recipefy-images"
+
+
 
 limit = 48
 
@@ -100,7 +109,6 @@ class SearchRecipeAPIView(APIView):
                                       {'recipe_name': recipe_name, 
                                        'offset_val': offset, 
                                        'limit_val': limit})
-        print(searched_results)
         if (type(searched_results) == dict):
             searched_results = [searched_results]
         return JsonResponse({"key_results": searched_results,
@@ -244,7 +252,6 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
         query_text = query_text.replace("%(tag_texts)s", tags_str)
         query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
 
-        print(query_text)
         offset = (page_num - 1) * limit
 
         exec = exec_query(query_text, {'offset_val': offset, 'limit_val': limit,
@@ -258,10 +265,21 @@ class SearchRecipeBasedOnCuisineAndTagsAPIView(APIView):
 
 class CreateRecipeAPIView(APIView):
 
-    def post(self, request, format="json"):
+    def post(self, request):
         print('Create recipe invoked')
-        print(request.data)
-        data = JSONParser().parse(request)
+        data = json.loads(request.data["data"])
+        uploaded_file = request.FILES["file"]
+        s3_file_name_prefix, s3_file_extension = str(uploaded_file).split(".")
+        s3_file_name_prefix = s3_file_name_prefix + datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
+        s3_file_name = s3_file_name_prefix + f".{s3_file_extension}"
+
+        # Uploading to S3
+        with default_storage.open(s3_file_name, "wb+") as f:
+            for chunk in uploaded_file.chunks():
+                f.write(chunk)
+            
+        s3_url = f"https://{s3_bucket}.s3.amazonaws.com/{s3_file_name}"
+        data["img_url"] = s3_url
 
         #Inserting Ingredients into Ingredient table if not exists
         recipe_name = data["recipe_name"]

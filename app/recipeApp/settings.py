@@ -73,6 +73,18 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "aws_creds.json")) as f:
+    aws_creds = json.load(f)
+
+AWS_ACCESS_KEY_ID = aws_creds["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = aws_creds["AWS_SECRET_ACCESS_KEY"]
+AWS_STORAGE_BUCKET_NAME = aws_creds["AWS_STORAGE_BUCKET_NAME"]
+AWS_DEFAULT_ACL = aws_creds["AWS_DEFAULT_ACL"]
+
+
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend'] #'django.contrib.auth.backends.AllowAllUsersModelBackend'
 
 MIDDLEWARE = [
