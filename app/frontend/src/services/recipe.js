@@ -33,4 +33,14 @@ const postRecipe = async (jsonObj) => {
   return response;
 }
 
-export default { getList, getAmount, getDetail, getSearch, postRecipe }
+const getTags = async () => {
+  const response = await axios.get(baseUrl + `/get-tags/`)
+  return response.data
+}
+
+const getCuisines = async () => {
+  const response = await axios.get(baseUrl + `/get-cuisines/`)
+  return response.data
+}
+
+export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines }
