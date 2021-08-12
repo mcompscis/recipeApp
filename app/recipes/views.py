@@ -242,7 +242,7 @@ class GetCuisinesAPIView(APIView):
 class GetTagsAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request):
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_cuisines.sql')
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_tags.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
         
