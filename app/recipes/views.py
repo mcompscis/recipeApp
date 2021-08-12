@@ -50,13 +50,15 @@ class TopFiveAPIView(APIView):
             queryText = file.read()
         return JsonResponse(exec_query(queryText), safe=False)
 
-class RecipeDetailAPIView(APIView):
+class GetRecipeDetailAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
     def get(self, request, pk):
         queryPath = os.path.join(os.path.dirname( __file__ ), 'recipe_queries/return_specific_recipe_info.sql')
         with open(queryPath, 'r') as file:
             queryText = file.read()
-        return JsonResponse(exec_query(queryText, {'pk': pk}), safe=False)
+        result = exec_query(queryText, {'pk': pk})
+        print(result)
+        return JsonResponse(result, safe=False)
 
 class GetRecipesAPIView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -402,3 +404,24 @@ class CreateRecipeAPIView(APIView):
             exec_query(insert_recipe_tag_query, {'recipe_id':recipe_id,'tag_text':tag})
  
         return JsonResponse({"new_recipe_id": recipe_id})
+    
+    
+class CreateInteractionAPIView(APIView):
+    # To Create a rating or a review
+    def post(self, request):
+        data = JSONParser().parse(request)
+        review = None
+        if "review" in data.keys():
+            review = data["review"]
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/create_interaction.sql')
+        with open(query_path, 'r') as file:
+            query_text = file.read()
+        
+        interaction_id = exec_query(query_text, {"user_id": request.user.user_id, 
+                                "recipe_id": data["recipe_id"],
+                                "interaction_date": datetime.today().strftime("%Y-%m-%d"),
+                                "rating": data["rating"],
+                                "review": review
+                                }, multi=True)
+        
+        return JsonResponse({"new_interaction_id": interaction_id})
