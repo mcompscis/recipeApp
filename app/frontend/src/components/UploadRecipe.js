@@ -64,6 +64,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   const [newPrepTime, setPrepTime] = useState(90);
   const [autoCompleteValue, setAutoCompleteValue] = useState([]);
   const [ingredientRows, setIngredientRows] = useState([{}])
+  const [image, setImage] = useState({})
 
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -79,24 +80,25 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
 
   const handleSave = async() => {
-    console.log('save invoked');
-    const jsonObj = {
+    var bodyFormData = new FormData()
+    const data = {
       "recipe_name": newName,
       "recipe_text": newPreparation,
       "description": newDescription,
       "calories": newCalories,
       "time_to_prepare": newPrepTime,
-      "img_url": "",
       "serves": newServes,
       "ingredient_names": ingredientRows.map(row => row.ingredient),
       "quantities": ingredientRows.map(row => row.quantity),
       "measurement_units": ingredientRows.map(row => row.measurement),
       "cuisine_name": newCuisine,
       "tags": autoCompleteValue
-    };
-    console.log(jsonObj)
+    }
+    bodyFormData.append('data', JSON.stringify(data))
+    bodyFormData.append('file', image)
+    console.log(Object.fromEntries(bodyFormData))
     try {
-      const response = await recipe.postRecipe(jsonObj);
+      const response = await recipe.postRecipe(bodyFormData);
       toast.success('Submitted Recipe', {
         position: "top-right",
         autoClose: 3000,
@@ -225,7 +227,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       </DialogContent>
       <DialogActions>
         <div className={classes.uploadBtn}>
-          <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+          <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={(event) => setImage(event.target.files[0])} />
           <label htmlFor="icon-button-file">
             <IconButton color="primary" aria-label="upload picture" component="span">
               <PhotoCamera />

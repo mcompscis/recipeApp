@@ -229,6 +229,7 @@ class CreateRecipeAPIView(APIView):
 
     def post(self, request, format="json"):
         print('Create recipe invoked')
+        print(request.data)
         data = JSONParser().parse(request)
 
         #Inserting Ingredients into Ingredient table if not exists
