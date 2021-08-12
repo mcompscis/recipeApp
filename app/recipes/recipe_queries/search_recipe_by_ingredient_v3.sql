@@ -7,13 +7,14 @@ FROM
                avg_rating,
                num_ratings,
                cuisine_name,
-               img_url
+               img_url,
+               description
         FROM   Tag AS t
                INNER JOIN RecipeTag AS rt
                        ON t.tag_id = rt.tag_id
                INNER JOIN (
 	SELECT RI.ingredient_id,  RI.recipe_id, I.ingredient_name, R.recipe_name, R.num_ratings, 
-	R.avg_rating, R.description, R.img_url
+	R.avg_rating, R.description, R.img_url, R.cuisine_id
 	FROM Ingredient I
 	INNER JOIN RecipeIngredient RI
               ON I.ingredient_id = RI.ingredient_id
@@ -27,8 +28,8 @@ FROM
 			WHERE ((%(excluded_ingr_lst_is_null)s = "N") AND (MATCH (I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
 		)
             AND ((%(included_ingr_lst_is_null)s = "Y") OR (MATCH (ingredient_name) AGAINST(%(include_ingredients)s)))
-) R1
-                       ON rt.recipe_id = R1.recipe_id
+) r
+                       ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
 WHERE  ((%(tag_query_param_is_null)s = "Y") OR (tag_text IN %(tag_texts)s))
