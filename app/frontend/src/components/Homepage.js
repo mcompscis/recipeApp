@@ -43,11 +43,12 @@ const Homepage = () => {
       let res = await recipe.getList(page)
       setPageCount(res.num_pages) 
       setRecipeList(res.recipes)
+      Array.isArray(res.recipes) ? setRecipeList(res.recipes) :  setRecipeList([res.recipes])
     }
     else {
       let res = await recipe.getSearch(searchName, page)
       setPageCount(res.num_pages)
-      setRecipeList(res.key_results)
+      Array.isArray(res.key_results) ? setRecipeList(res.key_results) :  setRecipeList([res.key_results])
     }
   }
   

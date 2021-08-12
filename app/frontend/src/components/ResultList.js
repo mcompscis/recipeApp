@@ -14,25 +14,13 @@ const useStyles = makeStyles({
 
 const ResultList = ({recipes}) => {
   const classes = useStyles()
-  if(recipes.length > 1){
-    return(
-      <div className={classes.flexbox}>
-          {recipes.map(recipe =>
-            <PreviewCard recipe={recipe} key={recipe.recipe_id}/>
-          )}
-      </div>
-    )
-  }
-  else if(recipes.length == 1){
-    return(
-      <div className={classes.flexbox}>
-          <PreviewCard recipe={recipes} key={recipes.recipe_id}/>
-      </div>
-    )
-  }
-  else{
-    return null
-  }
+  return(
+    <div className={classes.flexbox}>
+        {recipes.map(recipe =>
+          <PreviewCard recipe={recipe} key={recipe.recipe_id}/>
+        )}
+    </div>
+  )
 }
 
 export default ResultList
