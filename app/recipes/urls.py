@@ -9,7 +9,9 @@ urlpatterns = [
     path("create-recipe/", views.CreateRecipeAPIView.as_view()),
     path("get-reviews/", views.GetRecipeReviewsAPIView.as_view()),
     path("search-recipe/", views.SearchRecipeAPIView.as_view()),
-    path("search-recipe-by-ingredients/", views.SearchRecipeBasedOnIngredientsAPIView.as_view()),
-    path("search-recipe-by-cuisines-tags/", views.SearchRecipeBasedOnCuisineAndTagsAPIView.as_view())
-
+    path("advanced-search", views.AdvancedSearchAPIView.as_view()),
+    path("search-recipe-by-cuisines-tags/", views.SearchRecipeBasedOnCuisineAndTagsAPIView.as_view()),
+    path("get-cuisines/", views.GetCuisinesAPIView.as_view()),
+    path("get-tags/", views.GetTagsAPIView.as_view()),
+    path("get-ingredients/", views.GetIngredientsAPIView.as_view()),
 ]
