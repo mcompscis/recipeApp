@@ -18,23 +18,21 @@ FROM
 	FROM Ingredient I
 	INNER JOIN RecipeIngredient RI
               ON I.ingredient_id = RI.ingredient_id
-	INNER JOIN Recipe R
+	INNER JOIN (SELECT * FROM Recipe WHERE ((%(is_recipe_name_null)s IS NULL) OR (MATCH (recipe_name) AGAINST(%(recipe_name)s)))) R
               ON RI.recipe_id = R.recipe_id
 	WHERE RI.recipe_id NOT IN (
 			SELECT DISTINCT (RI.recipe_id)
 			FROM Ingredient I
 			INNER JOIN RecipeIngredient RI 
 			ON I.ingredient_id = RI.ingredient_id
-			WHERE ((%(excluded_ingr_lst_is_null)s IS NOT NULL) AND (MATCH(I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
+			WHERE ((%(is_excluded_ingr_lst_null)s IS NOT NULL) AND (MATCH(I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
 		)
-            AND ((%(included_ingr_lst_is_null)s IS NULL) OR (MATCH(ingredient_name) AGAINST(%(include_ingredients)s)))
+            AND ((%(is_included_ingr_lst_null)s IS NULL) OR (MATCH(ingredient_name) AGAINST(%(include_ingredients)s)))
 ) r
                        ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
-WHERE  ((%(tag_query_param_is_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
-AND ((%(cuisine_query_param_is_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
+WHERE  ((%(is_tag_query_param_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
+AND ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;
-
-
