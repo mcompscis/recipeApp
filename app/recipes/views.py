@@ -1,3 +1,4 @@
+from re import search
 from django.http import HttpResponse, JsonResponse
 from setup_tables.query_manager import exec_query
 import os
@@ -57,7 +58,6 @@ class GetRecipeDetailAPIView(APIView):
         with open(queryPath, 'r') as file:
             queryText = file.read()
         result = exec_query(queryText, {'pk': pk})
-        print(result)
         return JsonResponse(result, safe=False)
 
 class GetRecipesAPIView(APIView):
@@ -65,7 +65,7 @@ class GetRecipesAPIView(APIView):
     def get(self, request):
         page_num = request.query_params.get('page')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_n_recipes.sql')
+        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_top_imdb_recipes_based_on_limit_offset.sql')
         with open(query_path, 'r') as file:
             query_text = file.read()
         offset = (page_num - 1) * limit
@@ -269,31 +269,6 @@ class AdvancedSearchAPIView(APIView):
         return JsonResponse({"key_results": searched_results,
                              "num_pages": math.ceil(float(num_results["CNT"]/limit)),
                              "num_results": num_results["CNT"]}, safe=False)
-
-    # def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
-    #              is_included_ingr_lst_null, is_excluded_ingr_lst_null,
-    #              tags_str, cuisines_str, is_tag_query_param_null, is_cuisine_query_param_null):
-
-    #     included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)  
-    #     excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
-
-    #     query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query_v2.sql')
-    #     with open(query_path, 'r') as file:
-    #         query_text = file.read()
-            
-    #     query_text = query_text.replace("%(tag_texts)s", tags_str)
-    #     query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
-    #     query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
-    #     query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
-            
-    #     offset = (page_num - 1) * limit
-    #     exec = exec_query(query_text, {
-    #         "is_included_ingr_lst_null": is_included_ingr_lst_null,
-    #         "is_excluded_ingr_lst_null": is_excluded_ingr_lst_null,
-    #         "is_tag_query_param_null": is_tag_query_param_null,
-    #         "is_cuisine_query_param_null": is_cuisine_query_param_null,
-    #         'offset_val': offset, 'limit_val': limit})
-    #     return exec
 
     def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  is_included_ingr_lst_null, is_excluded_ingr_lst_null,

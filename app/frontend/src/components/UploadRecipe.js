@@ -274,7 +274,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             className={success ? classes.buttonSuccess : null}
             onClick={() => handleSave()}
           >
-            {success ? <CheckIcon /> : "Save"}
+            {success ? <CheckIcon /> : "Submit Recipe"}
           </Button>
         </div>
       </DialogActions>
