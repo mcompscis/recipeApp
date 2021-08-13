@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import recipe from '../services/recipe'
+import UploadReview from './UploadReview'
 
 import {
   BrowserRouter as Router,
@@ -26,6 +27,7 @@ const Recipe = () => {
     padding: 0,
   };
 
+  const [reviewCreate, setReviewCreate] = useState(false)
 
   const [recipeDetail, setRecipeDetail] = useState({})
   const [tags, setTags] = useState([]);
@@ -54,6 +56,10 @@ const Recipe = () => {
   return (
     <MuiThemeProvider>
       <div>
+        <UploadReview
+          open={reviewCreate}
+          onClose={() => setReviewCreate(false)}
+        />
         <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
         <Typography variant="body1">Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
