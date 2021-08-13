@@ -226,7 +226,7 @@ class AdvancedSearchAPIView(APIView):
             'limit_val': limit
             }
 
-        exec1 = exec_query(get_num_recipes_from_advanced_search_query, 
+        num_results = exec_query(get_num_recipes_from_advanced_search_query, 
                            query_params)
         
         searched_results = exec_query(advanced_search_query, 
@@ -235,8 +235,8 @@ class AdvancedSearchAPIView(APIView):
             searched_results = [searched_results]
         
         return JsonResponse({"key_results": searched_results,
-                             "num_pages": math.ceil(float(exec1["CNT"]/limit)),
-                             "num_results": exec1["CNT"]}, safe=False)
+                             "num_pages": math.ceil(float(num_results["CNT"]/limit)),
+                             "num_results": num_results["CNT"]}, safe=False)
 
     def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  is_included_ingr_lst_null, is_excluded_ingr_lst_null,
