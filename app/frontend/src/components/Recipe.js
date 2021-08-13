@@ -4,6 +4,8 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import recipe from '../services/recipe'
 
+var capitalize = require('capitalize')
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,7 +17,8 @@ import {
 } from "react-router-dom"
 import { Chip, List, ListItem } from 'material-ui';
 import { MuiThemeProvider } from 'material-ui/styles';
-import { Button, Typography } from '@material-ui/core';
+import { Button, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Typography } from '@material-ui/core';
+import { string } from 'prop-types';
 
 const Recipe = () => {
 
@@ -39,6 +42,7 @@ const Recipe = () => {
   const [quantities, setQuantities] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [addReview, setAddReview] = useState(false);
+  const [rows, setRows] = useState([]);
   const id = useParams().id
   useEffect(() => {    
     recipe.getDetail(id).then(recipe => {
@@ -61,11 +65,31 @@ const Recipe = () => {
       console.log(res.key_results);
     })
   }, [])
+
+  useEffect(() => {
+    if (ingredients !== null && measure !== null && quantities !== null) {
+
+      let tableRows = [];
+      let ingredientLen = ingredients.length;
+
+      for (let i = 0; i < ingredientLen; ++i) {
+        let obj = {
+          "key": i,
+          "ingredient_name": ingredients[i],
+          "measurement_type": measure[i],
+          "quantity": quantities[i]
+        }
+        tableRows.push(obj);
+      }
+      setRows(tableRows);
+    }
+  }, [ingredients, measure, quantities])
   
   return (
     <MuiThemeProvider>
       <Container component='main' >
-        <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
+      <CssBaseline/>
+        <Typography variant="h3">{capitalize.words(recipeDetail.recipe_name??"")}</Typography>
         <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
           {tags.map((tag) => {
@@ -75,23 +99,32 @@ const Recipe = () => {
         <Typography variant="h5" >Description:</Typography>
         <Typography variant="body1" >{recipeDetail.description}</Typography>
         <img src={recipeDetail.img_url}></img>
-        <Typography variant="h5" >Ingredients/Measurement/Quantites:</Typography>
-        <List style={flexContainer}>
-          {ingredients.map((ingredient) => {
-            return <ListItem>{ingredient}</ListItem>;
-          })}
-        </List>
-        <List style={flexContainer}>
-          {measure.map((mes) => {
-            return <ListItem>{mes}</ListItem>;
-          })}
-        </List>
-        <List style={flexContainer}>
-          {quantities.map((qua) => {
-            return <ListItem>{qua}</ListItem>;
-          })}
-        </List>
-        <Typography variant="h5" >Cooking Instructions:</Typography>
+
+        <TableContainer>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Ingredient</strong></TableCell>
+                <TableCell align="right"><strong>Quantity</strong></TableCell>
+                <TableCell align="right"><strong>Measurement Type</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.key}>
+                  <TableCell component="th" scope="row">
+                    {row.ingredient_name}
+                  </TableCell>
+                  <TableCell align="right">{row.quantity}</TableCell>
+                  <TableCell align="right">{row.measurement_type}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+
+        <Typography variant="h5">Cooking Instructions:</Typography>
         <List>
           {instructions.map((inst) => {
             return <ListItem>{inst}</ListItem>;
