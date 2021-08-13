@@ -8,6 +8,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import AdvancedSearch from './AdvancedSearch';
+import { useHistory } from "react-router-dom";
 
 
 const useStyles = makeStyles(theme => ({
@@ -55,17 +56,20 @@ const useStyles = makeStyles(theme => ({
 
 const SearchBar = () => {
   const classes = useStyles() 
+  const history = useHistory();
   const [openSearch, setOpenSearch] = useState(false)
   const dispatch = useDispatch()
   const nameSearched = useSelector(state => state.search.rawname)
 
   const handleChangeName = (event) => {
+    history.push("/recipes")
     dispatch(setSearchRecipeName(event.target.value))
   }
 
   const handleClickOpen = () => {
-    setOpenSearch(true);
-  };
+    history.push("/recipes")
+    setOpenSearch(true)
+  }
 
   const handleClose = () => {
     setOpenSearch(false);
@@ -90,7 +94,6 @@ const SearchBar = () => {
             <IconButton
               aria-label="advanced search"
               onClick={handleClickOpen}
-              //onMouseDown={}
             >
               {<FilterListIcon color="inherit"/>}
             </IconButton>

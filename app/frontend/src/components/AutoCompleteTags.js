@@ -55,8 +55,11 @@ const AutoCompleteTags = ({options, value, setValue, label, action}) => {
           onKeyDown={(e) => {
             if (e.keyCode === 13 && e.target.value) {
               setValue(value.concat(e.target.value))
+              action(value.concat(e.target.value))
             }
-            action(value)
+            else{
+              action(value)
+            }
           }}
         />
       )}
