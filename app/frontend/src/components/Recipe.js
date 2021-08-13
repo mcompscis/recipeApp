@@ -18,7 +18,6 @@ import {
 import { Chip, List, ListItem } from 'material-ui';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Button, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Typography } from '@material-ui/core';
-import { string } from 'prop-types';
 
 const Recipe = () => {
 
