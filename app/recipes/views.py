@@ -546,8 +546,16 @@ class CreateInteractionAPIView(APIView):
         if "review" in data.keys():
             review = data["review"]
         query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/create_interaction.sql')
+        check_query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/check_user_interaction.sql')
+        with open(check_query_path, 'r') as file:
+            check_exists_query_text = file.read()
+
         with open(query_path, 'r') as file:
             query_text = file.read()
+        
+        result = exec_query(check_exists_query_text, {"user_id": request.user.user_id, "recipe_id": data["recipe_id"]})
+        if result["DoesExist"]:
+            return JsonResponse({"error": "Can't submit more than 1 review"}, status=500)
         
         interaction_id = exec_query(query_text, {"user_id": request.user.user_id, 
                                 "recipe_id": data["recipe_id"],

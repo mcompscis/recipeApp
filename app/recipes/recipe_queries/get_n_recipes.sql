@@ -4,6 +4,6 @@
 -- Reverting back to basic order-by since it saves lots of time
 SELECT *
 FROM Recipe
-ORDER BY avg_rating DESC, num_ratings DESC
+ORDER BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;

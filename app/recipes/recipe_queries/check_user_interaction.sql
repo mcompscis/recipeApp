@@ -1,0 +1,1 @@
+SELECT EXISTS (SELECT * FROM Interaction WHERE user_id = %(user_id)s AND recipe_id = %(recipe_id)s) AS DoesExist;
