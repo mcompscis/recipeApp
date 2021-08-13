@@ -9,6 +9,7 @@ import AddRecipeButton from './AddRecipeButton';
 import UploadRecipe from './UploadRecipe';
 import ResultList from './ResultList';
 import { setLoading, setDoneLoading } from '../reducers/loadingReducer';
+import { setDoneFalse } from '../reducers/searchReducer'
 
 const useStyles = makeStyles({
   flexbox: {
@@ -45,6 +46,7 @@ const Homepage = () => {
   let searchExcludeIngredients = useSelector(state => state.search.excludeingredient)
   let searchIncludeCuisines = useSelector(state => state.search.includecuisine)
   let searchIncludeTags = useSelector(state => state.search.includetags)
+  let advancedSearchDone = useSelector(state => state.search.done)
 
   const returnResults = async (page) => {
     if(searchName === '' && searchIncludeIngredients === '' && searchExcludeIngredients === '' && searchIncludeCuisines === '' && searchIncludeTags === ''){
@@ -53,12 +55,12 @@ const Homepage = () => {
       setRecipeList(res.recipes)
       Array.isArray(res.recipes) ? setRecipeList(res.recipes) :  setRecipeList([res.recipes])
     }
-    else if(searchIncludeIngredients === '' && searchExcludeIngredients === '' && searchIncludeCuisines === '' && searchIncludeTags === ''){
+    else if(searchName !== '' && searchIncludeIngredients === '' && searchExcludeIngredients === '' && searchIncludeCuisines === '' && searchIncludeTags === ''){
       let res = await recipe.getSearch(searchName, page)
       setPageCount(res.num_pages)
       Array.isArray(res.key_results) ? setRecipeList(res.key_results) :  setRecipeList([res.key_results])
     }
-    else {
+    else if(advancedSearchDone){
       let res = await recipe.getAdvancedSearch(searchName, searchIncludeIngredients, searchExcludeIngredients, searchIncludeCuisines, searchIncludeTags, page)
       setPageCount(res.num_pages)
       Array.isArray(res.key_results) ? setRecipeList(res.key_results) : setRecipeList([res.key_results])
@@ -69,7 +71,7 @@ const Homepage = () => {
   useEffect(() => {
     dispatch(setLoading())
     returnResults(pageNum)
-  }, [searchName, searchIncludeIngredients, searchExcludeIngredients, searchIncludeCuisines, searchIncludeTags])
+  }, [searchName, advancedSearchDone])
 
   const handleChange = async (event, value) => {
     event.preventDefault();

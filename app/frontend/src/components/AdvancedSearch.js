@@ -13,7 +13,9 @@ import { setSearchRecipeName,
           setSearchIncludeIngredients,
           setSearchExcludeIngredients,
           setSearchIncludeCuisines,
-          setSearchIncludeTags } from '../reducers/searchReducer'
+          setSearchIncludeTags,
+          setDoneTrue,
+          setDoneFalse } from '../reducers/searchReducer'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -67,6 +69,12 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
     dispatch(setSearchIncludeTags(value))
   }
 
+  const handleDone = () => {
+    //dispatch(setDoneFalse())
+    dispatch(setDoneTrue())
+    handleClose()
+  }
+
   return (
     <div>
       <Dialog
@@ -102,8 +110,8 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Done
+          <Button onClick={handleDone} color="primary">
+            Search
           </Button>   
         </DialogActions>
       </Dialog>

@@ -5,7 +5,8 @@ const initialState = {
   includeingredient: '',
   excludeingredient: '',
   includecuisine: '',
-  includetags: ''
+  includetags: '',
+  done: false
 }
 
 export const setSearchRecipeName = (name, page) => {
@@ -53,6 +54,18 @@ export const setSearchIncludeTags = (tags, page) => {
   }
 }
 
+export const setDoneTrue = () => {
+  return {
+    type: 'SET_DONE_TRUE',
+  }
+}
+
+export const setDoneFalse = () => {
+  return {
+    type: 'SET_DONE_FALSE',
+  }
+}
+
 const searchReducer = (state = initialState, action) => {
   switch(action.type){
     case 'SET_NAME_SEARCH':
@@ -65,6 +78,10 @@ const searchReducer = (state = initialState, action) => {
       return {...state, includecuisine: action.data}
     case 'SET_INCLUDE_TAGS':
       return {...state, includetags: action.data}
+    case 'SET_DONE_TRUE':
+      return {...state, done: true}
+    case 'SET_DONE_FALSE':
+      return {...state, done: false}
     default:
       return state
   }
