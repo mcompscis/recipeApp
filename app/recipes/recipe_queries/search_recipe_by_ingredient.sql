@@ -1,20 +1,22 @@
 -- This query filters the Recipe table such that only entries with specified ingredients and those without the specified allergens will be returned
--- The query below assumes that the user wants to filter the recipe list based on ingredients like 'chicken' as an example of include_ingredient_1
--- and wants to avoid the ingredient 'paneer' as an example of exclude_ingredient_1
-SELECT DISTINCT recipe_name
-FROM (
-	SELECT ri.ingredient_id,  ri.recipe_id, i.ingredient_name, r.recipe_name
-	FROM Ingredient AS i
-	INNER JOIN RecipeIngredient AS ri 
-              ON i.ingredient_id = ri.ingredient_id
-	INNER JOIN Recipe AS r
-              ON ri.recipe_id = r.recipe_id
-	WHERE ri.recipe_id NOT IN (
-			SELECT DISTINCT (ri.recipe_id)
-			FROM Ingredient AS i
-			INNER JOIN RecipeIngredient AS ri ON i.ingredient_id = ri.ingredient_id
-			WHERE i.ingredient_name LIKE %(exclude_ingredient_1)s
+SELECT DISTINCT T.recipe_id, T.recipe_name, T.num_ratings, T.avg_rating, T.description, T.img_url
+FROM 
+(
+	SELECT RI.ingredient_id,  RI.recipe_id, I.ingredient_name, R.recipe_name, R.num_ratings, 
+	R.avg_rating, R.description, R.img_url, R.cuisine_id
+	FROM Ingredient I
+	INNER JOIN RecipeIngredient RI
+              ON I.ingredient_id = RI.ingredient_id
+	INNER JOIN (SELECT * FROM Recipe WHERE ((%(is_recipe_name_null)s IS NULL) OR (MATCH (recipe_name) AGAINST(%(recipe_name)s)))) R
+              ON RI.recipe_id = R.recipe_id
+	WHERE RI.recipe_id NOT IN (
+			SELECT DISTINCT (RI.recipe_id)
+			FROM Ingredient I
+			INNER JOIN RecipeIngredient RI 
+			ON I.ingredient_id = RI.ingredient_id
+			WHERE ((%(is_excluded_ingr_lst_null)s IS NOT NULL) AND (MATCH(I.ingredient_name) AGAINST(%(exclude_ingredients)s)))
 		)
-              AND ingredient_name LIKE %(include_ingredient_1)s
+            AND ((%(is_included_ingr_lst_null)s IS NULL) OR (MATCH(ingredient_name) AGAINST(%(include_ingredients)s)))
 ) T
-ORDER BY recipe_name;
+LIMIT  %(limit_val)s
+OFFSET %(offset_val)s;

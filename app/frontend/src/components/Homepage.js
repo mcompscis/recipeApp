@@ -8,6 +8,8 @@ import recipe from '../services/recipe'
 import AddRecipeButton from './AddRecipeButton';
 import UploadRecipe from './UploadRecipe';
 import ResultList from './ResultList';
+import { setLoading, setDoneLoading } from '../reducers/loadingReducer';
+import { setDoneFalse } from '../reducers/searchReducer'
 
 const useStyles = makeStyles({
   flexbox: {
@@ -32,28 +34,44 @@ const useStyles = makeStyles({
 
 const Homepage = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+
   const [pageNum, setPageNum] = useState(1)
   const [pageCount, setPageCount] = useState(1)
   const [recipeList, setRecipeList] = useState([])
   const [recipeCreate, setRecipeCreate] = useState(false)
 
   let searchName = useSelector(state => state.search.name)
+  let searchIncludeIngredients = useSelector(state => state.search.includeingredient)
+  let searchExcludeIngredients = useSelector(state => state.search.excludeingredient)
+  let searchIncludeCuisines = useSelector(state => state.search.includecuisine)
+  let searchIncludeTags = useSelector(state => state.search.includetags)
+  let advancedSearchDone = useSelector(state => state.search.done)
+
   const returnResults = async (page) => {
-    if(searchName === ''){
+    if(searchName === '' && searchIncludeIngredients === '' && searchExcludeIngredients === '' && searchIncludeCuisines === '' && searchIncludeTags === ''){
       let res = await recipe.getList(page)
       setPageCount(res.num_pages) 
       setRecipeList(res.recipes)
+      Array.isArray(res.recipes) ? setRecipeList(res.recipes) :  setRecipeList([res.recipes])
     }
-    else {
+    else if(searchName !== '' && searchIncludeIngredients === '' && searchExcludeIngredients === '' && searchIncludeCuisines === '' && searchIncludeTags === ''){
       let res = await recipe.getSearch(searchName, page)
       setPageCount(res.num_pages)
-      setRecipeList(res.key_results)
+      Array.isArray(res.key_results) ? setRecipeList(res.key_results) :  setRecipeList([res.key_results])
     }
+    else if(advancedSearchDone){
+      let res = await recipe.getAdvancedSearch(searchName, searchIncludeIngredients, searchExcludeIngredients, searchIncludeCuisines, searchIncludeTags, page)
+      setPageCount(res.num_pages)
+      Array.isArray(res.key_results) ? setRecipeList(res.key_results) : setRecipeList([res.key_results])
+    }
+    dispatch(setDoneLoading())
   }
   
   useEffect(() => {
+    dispatch(setLoading())
     returnResults(pageNum)
-  }, [searchName])
+  }, [searchName, advancedSearchDone])
 
   const handleChange = async (event, value) => {
     event.preventDefault();

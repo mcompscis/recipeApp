@@ -5,6 +5,8 @@ import Navbar from './components/Navbar';
 import Homepage from './components/Homepage';
 import Recipe from './components/Recipe'
 import UserDetail from './components/UserDetail';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { useSelector } from 'react-redux'
 
 import {
   BrowserRouter as Router,
@@ -17,9 +19,11 @@ import {
 } from "react-router-dom"
 
 const App = () => {
+  let loading = useSelector(state => state.loading)
   return (
     <div>
       <Navbar/>
+      {loading && <LinearProgress/>}
       <Switch>
         <Route path='/recipes'>
           <Homepage/>

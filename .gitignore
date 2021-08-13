@@ -1,4 +1,5 @@
 /app/recipeApp/db_credentials.json
+/app/recipeApp/aws_creds.json
 /app/recipeApp/__pycache__/
 /app/recipe_app/__pycache__/
 /app/recipe_app/migrations/__pycache__/

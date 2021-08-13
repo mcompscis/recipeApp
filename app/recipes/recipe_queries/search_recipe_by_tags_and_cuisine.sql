@@ -8,22 +8,23 @@ SELECT DISTINCT recipe_id,
        recipe_name,
        avg_rating,
        num_ratings,
-       cuisine_name
+       cuisine_name,
+       img_url
 FROM   (SELECT tag_text,
                r.recipe_id AS recipe_id,
                recipe_name,
                avg_rating,
                num_ratings,
-               cuisine_name
+               cuisine_name,
+               img_url
         FROM   Tag AS t
                INNER JOIN RecipeTag AS rt
                        ON t.tag_id = rt.tag_id
-               INNER JOIN Recipe AS r
+               INNER JOIN (SELECT * FROM Recipe WHERE ((%(is_recipe_name_null)s IS NULL) OR (MATCH (recipe_name) AGAINST(%(recipe_name)s)))) AS r
                        ON rt.recipe_id = r.recipe_id
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
-WHERE  tag_text = %(tag_text)s
-AND cuisine_name = %(cuisine_name)s) T
-ORDER  BY ((avg_rating * num_ratings) + (SELECT AVG(avg_rating) FROM Recipe) * 100) / (num_ratings + 100) DESC
+WHERE  ((%(is_tag_query_param_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
+AND ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
 LIMIT  %(limit_val)s
 OFFSET %(offset_val)s;

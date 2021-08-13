@@ -64,9 +64,23 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   const [newPrepTime, setPrepTime] = useState(90);
   const [autoCompleteValue, setAutoCompleteValue] = useState([]);
   const [ingredientRows, setIngredientRows] = useState([{}])
+  const [image, setImage] = useState({})
 
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const [cuisines, setCuisines] = useState([])
+  const [tags, setTags] = useState([])
+
+  useEffect(() => {    
+    recipe.getCuisines().then(res =>
+      setCuisines(res.map(res => res.cuisine_name))
+    )
+
+    recipe.getTags().then(res =>
+      setTags(res.map(res => res.tag_text))
+    )
+
+  }, [])
 
   useEffect(() => {
     if (success) {
@@ -76,27 +90,40 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     }
   }, [success]);
 
-  //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
+  const clearState = () => {
+    setNewName('New Recipe')
+    setServes(1)
+    setPreparation('')
+    setNewDescription('')
+    setCalories(100)
+    setCuisine('')
+    setPrepTime(90)
+    setAutoCompleteValue([])
+    setIngredientRows([])
+    setIngredientRows([{}])
+    setImage({})
+  }
 
   const handleSave = async() => {
-    console.log('save invoked');
-    const jsonObj = {
+    var bodyFormData = new FormData()
+    const data = {
       "recipe_name": newName,
       "recipe_text": newPreparation,
       "description": newDescription,
       "calories": newCalories,
       "time_to_prepare": newPrepTime,
-      "img_url": "",
       "serves": newServes,
       "ingredient_names": ingredientRows.map(row => row.ingredient),
       "quantities": ingredientRows.map(row => row.quantity),
       "measurement_units": ingredientRows.map(row => row.measurement),
       "cuisine_name": newCuisine,
       "tags": autoCompleteValue
-    };
-    console.log(jsonObj)
+    }
+    bodyFormData.append('data', JSON.stringify(data))
+    bodyFormData.append('file', image)
     try {
-      const response = await recipe.postRecipe(jsonObj);
+      const response = await recipe.postRecipe(bodyFormData)
+      clearState()
       toast.success('Submitted Recipe', {
         position: "top-right",
         autoClose: 3000,
@@ -105,10 +132,12 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      });
-      return response;
+      })
+      clearState
+      return response
     } 
     catch (error) {
+      clearState()
       toast.error('Error Submitting Recipe', {
         position: "top-right",
         autoClose: 3000,
@@ -117,7 +146,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-      });
+      })
     }
   }
 
@@ -135,7 +164,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       </DialogTitle>
       <DialogContent>
         <TextField
-          defaultValue={newName}
+          value={newName}
           autoFocus
           margin="normal"
           id="name"
@@ -147,7 +176,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
         <div style={{ display: "flex", justifyContent: "flex-start" }}>
           <TextField
             className={classes.textField}
-            defaultValue={newServes}
+            value={newServes}
             margin="normal"
             id="serves"
             label="Serves"
@@ -156,7 +185,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           />
           <TextField
             className={classes.textField}
-            defaultValue={newCalories}
+            value={newCalories}
             margin="normal"
             id="calories"
             label="Calories"
@@ -165,7 +194,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           />
           <TextField
             className={classes.textField}
-            defaultValue={newPrepTime}
+            value={newPrepTime}
             margin="normal"
             id="preptime"
             label="Prep Time (mins)"
@@ -175,7 +204,8 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           <Autocomplete
             className={classes.textField}
             id="combo-box-demo"
-            options={["indian", "chinese", "mcdonalds"]}
+            value={newCuisine}
+            options={cuisines}
             onChange={(event, value) => setCuisine(value)}
             renderInput={(params) => <TextField {...params} label="Cuisine" />}
           />
@@ -185,6 +215,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           id="preparation"
           label="Preparation Instructions"
           type="text"
+          value={newPreparation}
           fullWidth
           multiline
           onChange={event => setPreparation(event.target.value)}
@@ -194,6 +225,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
           id="description"
           label="Description (optional)"
           type="text"
+          value={newDescription}
           fullWidth
           multiline
           onChange={event => setNewDescription(event.target.value)}
@@ -203,7 +235,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       <Autocomplete
         multiple
         id="tags-outlined"
-        options={["foo", "bar"]}
+        options={tags}
         value={autoCompleteValue}
         onChange={(e, newval, reason) => {
           setAutoCompleteValue(newval);
@@ -225,7 +257,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
       </DialogContent>
       <DialogActions>
         <div className={classes.uploadBtn}>
-          <input accept="image/*" className={classes.input} id="icon-button-file" type="file" />
+          <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={(event) => setImage(event.target.files[0])} />
           <label htmlFor="icon-button-file">
             <IconButton color="primary" aria-label="upload picture" component="span">
               <PhotoCamera />
@@ -240,14 +272,10 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             variant="contained"
             color="primary"
             className={success ? classes.buttonSuccess : null}
-            disabled={loading}
             onClick={() => handleSave()}
           >
             {success ? <CheckIcon /> : "Submit Recipe"}
           </Button>
-          {loading && (
-            <CircularProgress size={24} className={classes.buttonProgress} />
-          )}
         </div>
       </DialogActions>
       <ToastContainer

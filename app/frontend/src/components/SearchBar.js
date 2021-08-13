@@ -1,9 +1,16 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import { setSearchRecipeName } from '../reducers/searchReducer'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import FilterListIcon from '@material-ui/icons/FilterList'
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import AdvancedSearch from './AdvancedSearch';
+import { useHistory } from "react-router-dom";
+import { setDoneFalse } from '../reducers/searchReducer'
+
 
 const useStyles = makeStyles(theme => ({
   search: {
@@ -35,7 +42,6 @@ const useStyles = makeStyles(theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -50,10 +56,26 @@ const useStyles = makeStyles(theme => ({
 
 const SearchBar = () => {
   const classes = useStyles() 
+  const history = useHistory();
+  const [openSearch, setOpenSearch] = useState(false)
   const dispatch = useDispatch()
-  const handleChange = (event) => {
+  const nameSearched = useSelector(state => state.search.rawname)
+
+  const handleChangeName = (event) => {
+    history.push("/recipes")
     dispatch(setSearchRecipeName(event.target.value))
   }
+
+  const handleClickOpen = () => {
+    history.push("/recipes")
+    dispatch(setDoneFalse())
+    setOpenSearch(true)
+  }
+
+  const handleClose = () => {
+    setOpenSearch(false);
+  }
+
   return(
     <div className={classes.search}>
       <div className={classes.searchIcon}>
@@ -61,13 +83,25 @@ const SearchBar = () => {
       </div>
       <InputBase
         placeholder="Search…"
+        value={nameSearched}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
         inputProps={{ 'aria-label': 'search' }}
-        onChange={handleChange}
+        onChange={handleChangeName}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="advanced search"
+              onClick={handleClickOpen}
+            >
+              {<FilterListIcon color="inherit"/>}
+            </IconButton>
+          </InputAdornment>
+        }
       />
+      <AdvancedSearch open={openSearch} handleClose={handleClose} handleClickOpen={handleClickOpen}/>
     </div>
   )
 }

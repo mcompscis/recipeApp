@@ -1,18 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
 import MenuIcon from  '@material-ui/icons/menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Switch, Route, Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import {logout} from '../reducers/userReducer'
 import SearchBar from './SearchBar'
-import jwt_decode from "jwt-decode";
+import jwt_decode from "jwt-decode"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,7 +53,6 @@ const useStyles = makeStyles(theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -91,9 +89,7 @@ const NavBarButtons = () => {
          <IconButton
               edge="end"
               aria-label="account of current user"
-              //aria-controls={menuId}
               aria-haspopup="true"
-              //onClick={handleProfileMenuOpen}
               color="inherit"
               component={Link} 
               to={'/account'}
@@ -113,6 +109,12 @@ const NavBarButtons = () => {
 
 const Navbar = () => {
   const classes = useStyles() 
+  const history = useHistory()
+
+  const reloadHome = () => {
+    history.push('/')
+    location.reload()
+  }
 
   return (
     <div className={classes.root}>
@@ -121,7 +123,7 @@ const Navbar = () => {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title} component={Link} to={'/'}>
+          <Typography variant="h6" className={classes.title} onClick = {() => reloadHome()} >
             Recipefy
           </Typography>
           <SearchBar/>
