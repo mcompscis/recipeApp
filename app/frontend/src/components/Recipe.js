@@ -31,18 +31,25 @@ const Recipe = () => {
   const [tags, setTags] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [measure, setMeasure] = useState([]);
+  const [quantities, setQuantities] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [addReview, setAddReview] = useState(false);
   const id = useParams().id
   useEffect(() => {    
     recipe.getDetail(id).then(recipe => {
       setRecipeDetail(recipe);
+      console.log(recipe);
       let tagsArr = recipe.tag_text.split(',');
       let instArr = recipe.recipe_text.split('.');
       let ingredientsArr = recipe.ingredients.split(',');
+      let measure = recipe.measurement_units.split(',');
+      let quantities = recipe.quantities.split(',');
       setTags(tagsArr);
       setInstructions(instArr);
       setIngredients(ingredientsArr);
+      setMeasure(measure);
+      setQuantities(quantities);
     });
 
     recipe.getReviews(id).then(res => {
@@ -55,7 +62,7 @@ const Recipe = () => {
     <MuiThemeProvider>
       <div>
         <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
-        <Typography variant="body1">Date submitted: {recipeDetail.date_submitted}</Typography>
+        <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
           {tags.map((tag) => {
             return <ListItem button="true">{tag}</ListItem>;
@@ -64,10 +71,20 @@ const Recipe = () => {
         <Typography variant="h5" >Description:</Typography>
         <Typography variant="body1" >{recipeDetail.description}</Typography>
         <img src={recipeDetail.img_url}></img>
-        <Typography variant="h5" >Ingredients:</Typography>
+        <Typography variant="h5" >Ingredients/Measurement/Quantites:</Typography>
         <List style={flexContainer}>
           {ingredients.map((ingredient) => {
             return <ListItem>{ingredient}</ListItem>;
+          })}
+        </List>
+        <List style={flexContainer}>
+          {measure.map((mes) => {
+            return <ListItem>{mes}</ListItem>;
+          })}
+        </List>
+        <List style={flexContainer}>
+          {quantities.map((qua) => {
+            return <ListItem>{qua}</ListItem>;
           })}
         </List>
         <Typography variant="h5" >Cooking Instructions:</Typography>
