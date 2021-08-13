@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import AdvancedSearch from './AdvancedSearch';
 import { useHistory } from "react-router-dom";
+import { setDoneFalse } from '../reducers/searchReducer'
 
 
 const useStyles = makeStyles(theme => ({
@@ -67,6 +68,7 @@ const SearchBar = () => {
 
   const handleClickOpen = () => {
     history.push("/recipes")
+    dispatch(setDoneFalse())
     setOpenSearch(true)
   }
 
