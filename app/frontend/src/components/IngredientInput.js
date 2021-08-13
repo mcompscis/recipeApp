@@ -61,6 +61,7 @@ const IngredientRow = ({index, setRows, rows}) => {
             id="combo-box-demo"
             className={classes.textField}
             options={measurements}
+            freeSolo
             value={measurement}
             onChange={event => setCuisine(event.target.value)}
             renderInput={(params) => <TextField {...params} label="Measurement" />}
