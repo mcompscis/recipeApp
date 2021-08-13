@@ -34,7 +34,6 @@ const getAdvancedSearch = async (name, includeingredient, excludeingredient, cui
   url += cuisines === '' ? '' : `&${cuisines}` 
   url += tags === '' ? '' : `&${tags}`
   const response = await axios.get(url)
-  console.log(url)
   return response.data
 }
 

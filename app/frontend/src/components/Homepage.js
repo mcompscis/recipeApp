@@ -8,6 +8,7 @@ import recipe from '../services/recipe'
 import AddRecipeButton from './AddRecipeButton';
 import UploadRecipe from './UploadRecipe';
 import ResultList from './ResultList';
+import { setLoading, setDoneLoading } from '../reducers/loadingReducer';
 import { resetWarningCache } from 'prop-types';
 
 const useStyles = makeStyles({
@@ -33,6 +34,8 @@ const useStyles = makeStyles({
 
 const Homepage = () => {
   const classes = useStyles()
+  const dispatch = useDispatch()
+
   const [pageNum, setPageNum] = useState(1)
   const [pageCount, setPageCount] = useState(1)
   const [recipeList, setRecipeList] = useState([])
@@ -58,13 +61,14 @@ const Homepage = () => {
     }
     else {
       let res = await recipe.getAdvancedSearch(searchName, searchIncludeIngredients, searchExcludeIngredients, searchIncludeCuisines, searchIncludeTags, page)
-      setRecipeList(res)
-      //setPageCount(res.num_pages)
-      //Array.isArray(res.recipes) ? setRecipeList(res.recipes) : setRecipeList([res.recipes])
+      setPageCount(res.num_pages)
+      Array.isArray(res.key_results) ? setRecipeList(res.key_results) : setRecipeList([res.key_results])
     }
+    dispatch(setDoneLoading())
   }
   
   useEffect(() => {
+    dispatch(setLoading())
     returnResults(pageNum)
   }, [searchName, searchIncludeIngredients, searchExcludeIngredients, searchIncludeCuisines, searchIncludeTags])
 

@@ -10,7 +10,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import recipe from '../services/recipe'
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 
-const OPTIONS_LIMIT = 7;
+const OPTIONS_LIMIT = 15;
 const defaultFilterOptions = createFilterOptions();
 
 const filterOptions = (options, state) => {
@@ -44,7 +44,7 @@ const AutoCompleteTags = ({options, value, setValue, label, action}) => {
       options={options}
       value={value}
       onChange={(e, newval, reason) => {
-        setValue(newval);
+        setValue(newval)
         action(newval)
       }}
       renderInput={(params) => (
@@ -54,8 +54,9 @@ const AutoCompleteTags = ({options, value, setValue, label, action}) => {
           label={label}
           onKeyDown={(e) => {
             if (e.keyCode === 13 && e.target.value) {
-              setValue(value.concat(e.target.value));
+              setValue(value.concat(e.target.value))
             }
+            action(value)
           }}
         />
       )}

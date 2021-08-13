@@ -16,6 +16,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import recipe from '../services/recipe'
 import AutoCompleteTags from './AutoCompleteTags';
 import { useDispatch, useSelector } from 'react-redux'
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { setSearchRecipeName, 
           setSearchIncludeIngredients,
           setSearchExcludeIngredients,
@@ -47,6 +48,7 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const nameSearched = useSelector(state => state.search.rawname)
+  let loading = useSelector(state => state.loading)
 
   const [cuisines, setCuisines] = useState([])
   const [ingredients, setIngredients] = useState([])
@@ -102,6 +104,7 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
+        {loading && <LinearProgress/> }
         <DialogContent>
           <TextField
             value={nameSearched}
@@ -123,7 +126,6 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
             <AutoCompleteTags action={handleChangeIncCuisine} options={cuisines} value={includeCuisines} setValue={setIncludeCuisines} label={"Cuisines"} />
             <AutoCompleteTags action={handleChangeIncTag} options={tags} value={includeTags} setValue={setIncludeTags} label={"Tags"} />
           </div>
-
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">

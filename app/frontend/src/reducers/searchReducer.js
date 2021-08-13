@@ -9,7 +9,6 @@ const initialState = {
 }
 
 export const setSearchRecipeName = (name, page) => {
-  console.log(name)
   const fullName = name === '' ? '' : `recipe_name=${name.toLowerCase().split(" ").join("%")}`
   return {
     type: 'SET_NAME_SEARCH',
@@ -21,7 +20,6 @@ export const setSearchRecipeName = (name, page) => {
 export const setSearchIncludeIngredients = (ingredients, page) => {
   ingredients = ingredients.map(ingredient => ingredient.split(" ").join("%"))
   const querystring = ingredients.length === 0 ? '' : `included_ingredients=${ingredients.join(',')}`
-  console.log(querystring)
   return {
     type: 'SET_INCLUDE_INGREDIENTS',
     data: querystring
@@ -31,7 +29,6 @@ export const setSearchIncludeIngredients = (ingredients, page) => {
 export const setSearchExcludeIngredients = (ingredients, page) => {
   ingredients = ingredients.map(ingredient => ingredient.split(" ").join("%"))
   const querystring = ingredients.length === 0 ? '' : `excluded_ingredients=${ingredients.join(',')}`
-  console.log(querystring)
   return {
     type: 'SET_EXCLUDE_INGREDIENTS',
     data: querystring
@@ -41,9 +38,8 @@ export const setSearchExcludeIngredients = (ingredients, page) => {
 export const setSearchIncludeCuisines = (cuisines, page) => {
   cuisines = cuisines.map(cuisine => cuisine.split(" ").join("%"))
   const querystring = cuisines.length === 0 ? '' : `cuisines=${cuisines.join(',')}`
-  console.log(querystring)
   return {
-    type: 'SET_INCLUDE_',
+    type: 'SET_INCLUDE_CUISINES',
     data: querystring
   }
 }
@@ -51,7 +47,6 @@ export const setSearchIncludeCuisines = (cuisines, page) => {
 export const setSearchIncludeTags = (tags, page) => {
   tags = tags.map(tag => tag.split(" ").join("%"))
   const querystring = tags.length === 0 ? '' : `tags=${tags.join(',')}`
-  console.log(querystring)
   return {
     type: 'SET_INCLUDE_TAGS',
     data: querystring
