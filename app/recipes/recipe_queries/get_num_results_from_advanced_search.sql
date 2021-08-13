@@ -9,7 +9,7 @@ FROM
                cuisine_name,
                img_url,
                description
-        FROM   Tag AS t
+        FROM   (SELECT * FROM Tag WHERE  ((%(is_tag_query_param_null)s IS NULL) OR (tag_text IN %(tag_texts)s))) AS t
                INNER JOIN RecipeTag AS rt
                        ON t.tag_id = rt.tag_id
                INNER JOIN (
@@ -30,7 +30,6 @@ FROM
             AND ((%(is_included_ingr_lst_null)s IS NULL) OR (MATCH(ingredient_name) AGAINST(%(include_ingredients)s)))
 ) r
                        ON rt.recipe_id = r.recipe_id
-               INNER JOIN Cuisine AS c
+               INNER JOIN (SELECT * FROM Cuisine WHERE ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) AS c
                        ON r.cuisine_id = c.cuisine_id
-WHERE  ((%(is_tag_query_param_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
-AND ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T;
+                       ) T;

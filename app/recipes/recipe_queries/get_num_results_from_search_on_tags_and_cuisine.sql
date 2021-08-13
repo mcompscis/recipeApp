@@ -4,12 +4,12 @@
 -- limit_val is number of recipes to display on a page and offset_val is the offset for recipes on each page
 -- The queries are ordered based on weighted rating
 
-SELECT DISTINCT recipe_id,
+SELECT COUNT(DISTINCT recipe_id,
        recipe_name,
        avg_rating,
        num_ratings,
        cuisine_name,
-       img_url
+       img_url) AS CNT
 FROM   (SELECT tag_text,
                r.recipe_id AS recipe_id,
                recipe_name,
@@ -25,6 +25,4 @@ FROM   (SELECT tag_text,
                INNER JOIN Cuisine AS c
                        ON r.cuisine_id = c.cuisine_id
 WHERE  ((%(is_tag_query_param_null)s IS NULL) OR (tag_text IN %(tag_texts)s))
-AND ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T
-LIMIT  %(limit_val)s
-OFFSET %(offset_val)s;
+AND ((%(is_cuisine_query_param_null)s IS NULL) OR (cuisine_name IN %(cuisine_names)s))) T;
