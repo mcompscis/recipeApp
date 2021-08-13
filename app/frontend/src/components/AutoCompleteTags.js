@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AutoCompleteTags = ({options, value, setValue, label}) => {
+const AutoCompleteTags = ({options, value, setValue, label, action}) => {
   const classes = useStyles()
   return (
     <Autocomplete
@@ -45,6 +45,7 @@ const AutoCompleteTags = ({options, value, setValue, label}) => {
       value={value}
       onChange={(e, newval, reason) => {
         setValue(newval);
+        action(newval)
       }}
       renderInput={(params) => (
         <TextField

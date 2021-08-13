@@ -16,7 +16,11 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import recipe from '../services/recipe'
 import AutoCompleteTags from './AutoCompleteTags';
 import { useDispatch, useSelector } from 'react-redux'
-import { setSearchRecipeName } from '../reducers/searchReducer'
+import { setSearchRecipeName, 
+          setSearchIncludeIngredients,
+          setSearchExcludeIngredients,
+          setSearchIncludeCuisines,
+          setSearchIncludeTags } from '../reducers/searchReducer'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -71,6 +75,22 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
     dispatch(setSearchRecipeName(event.target.value))
   }
 
+  const handleChangeExIng = (value) => {
+    dispatch(setSearchExcludeIngredients(value))
+  }
+
+  const handleChangeIncIng = (value) => {
+    dispatch(setSearchIncludeIngredients(value))
+  }
+
+  const handleChangeIncCuisine = (value) => {
+    dispatch(setSearchIncludeCuisines(value))
+  }
+
+  const handleChangeIncTag = (value) => {
+    dispatch(setSearchIncludeTags(value))
+  }
+
   return (
     <div>
       <Dialog
@@ -95,13 +115,13 @@ const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
           />
 
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <AutoCompleteTags options={ingredients} value={includeIngredients} setValue={setIncludeIngredients} label={"Include Ingredients"} />
-            <AutoCompleteTags options={ingredients} value={excludeIngredients} setValue={setExcludeIngredients} label={"Exclude Ingredients"} />
+            <AutoCompleteTags action={handleChangeIncIng} options={ingredients} value={includeIngredients} setValue={setIncludeIngredients} label={"Include Ingredients"} />
+            <AutoCompleteTags action={handleChangeExIng} options={ingredients} value={excludeIngredients} setValue={setExcludeIngredients} label={"Exclude Ingredients"} />
           </div>
 
           <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <AutoCompleteTags options={cuisines} value={includeCuisines} setValue={setIncludeCuisines} label={"Cuisines"} />
-            <AutoCompleteTags options={tags} value={includeTags} setValue={setIncludeTags} label={"Tags"} />
+            <AutoCompleteTags action={handleChangeIncCuisine} options={cuisines} value={includeCuisines} setValue={setIncludeCuisines} label={"Cuisines"} />
+            <AutoCompleteTags action={handleChangeIncTag} options={tags} value={includeTags} setValue={setIncludeTags} label={"Tags"} />
           </div>
 
         </DialogContent>

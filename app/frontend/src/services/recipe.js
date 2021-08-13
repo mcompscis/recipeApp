@@ -1,5 +1,6 @@
 import axiosInstance from "./axiosApi";
 import axios from 'axios'
+import { setSearchExcludeIngredients } from "../reducers/searchReducer";
 
 //const baseUrl = 'http://ubuntu2004-002.student.cs.uwaterloo.ca:8000/api/recipes'
 const baseUrl = 'http://localhost:8000/api/recipes'
@@ -22,6 +23,18 @@ const getDetail = async (id) => {
 const getSearch = async (search, page) => {
   let url = baseUrl + `/search-recipe?${search}&page=${page}`
   const response = await axios.get(url)
+  return response.data
+}
+
+const getAdvancedSearch = async (name, includeingredient, excludeingredient, cuisines, tags, page) => {
+  let url = baseUrl + `/advanced-search?page=${page}`
+  url += name === '' ? '' : `&${name}`
+  url += includeingredient === '' ? '' : `&${includeingredient}`
+  url += excludeingredient === '' ? '' : `&${excludeingredient}`
+  url += cuisines === '' ? '' : `&${cuisines}` 
+  url += tags === '' ? '' : `&${tags}`
+  const response = await axios.get(url)
+  console.log(url)
   return response.data
 }
 
@@ -48,4 +61,4 @@ const getIngredients = async () => {
   return response.data
 }
 
-export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines, getIngredients }
+export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines, getIngredients, getAdvancedSearch }
