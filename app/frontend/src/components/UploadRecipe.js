@@ -123,6 +123,7 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     bodyFormData.append('file', image)
     try {
       const response = await recipe.postRecipe(bodyFormData)
+      clearState()
       toast.success('Submitted Recipe', {
         position: "top-right",
         autoClose: 3000,

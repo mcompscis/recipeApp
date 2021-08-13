@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from  '@material-ui/icons/menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import {logout} from '../reducers/userReducer'
 import SearchBar from './SearchBar'
@@ -109,6 +109,12 @@ const NavBarButtons = () => {
 
 const Navbar = () => {
   const classes = useStyles() 
+  const history = useHistory()
+
+  const reloadHome = () => {
+    history.push('/')
+    location.reload()
+  }
 
   return (
     <div className={classes.root}>
@@ -117,7 +123,7 @@ const Navbar = () => {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title} component={Link} to={''} >
+          <Typography variant="h6" className={classes.title} onClick = {() => reloadHome()} >
             Recipefy
           </Typography>
           <SearchBar/>

@@ -157,7 +157,7 @@ const Recipe = () => {
         </List>
         <Typography variant="h5" >Description:</Typography>
         <Typography variant="body1" >{recipeDetail.description}</Typography>
-        <img src={recipeDetail.img_url}></img>
+        <img src={recipeDetail.img_url} style={{maxWidth: "50%", maxHeight: "50%"}} ></img>
 
         <TableContainer>
           <Table aria-label="simple table">
