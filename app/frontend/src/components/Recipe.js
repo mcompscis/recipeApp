@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import recipe from '../services/recipe'
+import UploadReview from './UploadReview'
 
 var capitalize = require('capitalize')
 
@@ -28,6 +29,7 @@ const Recipe = () => {
     padding: 0,
   };
 
+  const [reviewCreate, setReviewCreate] = useState(false)
   const reviewContainer = {
     padding: '20px'
   };
@@ -89,6 +91,12 @@ const Recipe = () => {
       <Container component='main' >
       <CssBaseline/>
         <Typography variant="h3">{capitalize.words(recipeDetail.recipe_name??"")}</Typography>
+        <UploadReview
+            open={reviewCreate}
+            onClose={() => setReviewCreate(false)}
+            id={id}
+          />
+        <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
         <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
           {tags.map((tag) => {
@@ -139,7 +147,7 @@ const Recipe = () => {
           open={addReview}
           onClose={() => setAddReview(false)}
         /> */}
-        <Button variant="contained" onClick={() => setAddReview(true) }>Add Review</Button>
+        <Button variant="contained" onClick={() => setReviewCreate(true) }>Add Review</Button>
         <List>
           {reviews.map((review) => {
             return (

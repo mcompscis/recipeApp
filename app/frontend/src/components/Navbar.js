@@ -117,7 +117,7 @@ const Navbar = () => {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title} component={Link} to={''} onClick={() => location.reload()}>
+          <Typography variant="h6" className={classes.title} component={Link} to={''} >
             Recipefy
           </Typography>
           <SearchBar/>
