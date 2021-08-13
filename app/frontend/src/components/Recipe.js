@@ -96,7 +96,6 @@ const Recipe = () => {
             onClose={() => setReviewCreate(false)}
             id={id}
           />
-        <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
         <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
           {tags.map((tag) => {
