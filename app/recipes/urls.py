@@ -14,4 +14,5 @@ urlpatterns = [
     path("get-cuisines/", views.GetCuisinesAPIView.as_view()),
     path("get-tags/", views.GetTagsAPIView.as_view()),
     path("get-ingredients/", views.GetIngredientsAPIView.as_view()),
+    path("add-review", views.CreateInteractionAPIView.as_view()),
 ]
