@@ -47,7 +47,7 @@ const postRecipe = async (jsonObj) => {
 
 const postReview = async (jsonObj) => {
   console.log('Trying to post review: ', jsonObj);
-  const response = await axiosInstance.post('/add-review', jsonObj);
+  const response = await axiosInstance.post('/recipes/add-review', jsonObj);
   console.log('Posted review: ', jsonObj);
   console.log('Post response: ', response);
   return response;
@@ -73,4 +73,4 @@ const getReviews = async (id) => {
   return response.data
 }
 
-export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines, getIngredients, getAdvancedSearch, getReviews }
+export default { getList, getAmount, getDetail, getSearch, postRecipe, getTags, getCuisines, getIngredients, getAdvancedSearch, getReviews, postReview }

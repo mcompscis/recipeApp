@@ -59,6 +59,7 @@ const Recipe = () => {
         <UploadReview
           open={reviewCreate}
           onClose={() => setReviewCreate(false)}
+          id={id}
         />
         <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
         <Typography variant="body1">Date submitted: {recipeDetail.date_submitted}</Typography>
@@ -92,7 +93,7 @@ const Recipe = () => {
           open={addReview}
           onClose={() => setAddReview(false)}
         /> */}
-        <Button variant="contained" onClick={() => setAddReview(true) }>Add Review</Button>
+        <Button variant="contained" onClick={() => setReviewCreate(true) }>Add Review</Button>
         <List>
           {reviews.map((review) => {
             return (
