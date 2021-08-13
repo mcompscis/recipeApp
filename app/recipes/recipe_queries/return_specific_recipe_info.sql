@@ -18,7 +18,8 @@ SELECT T1.recipe_id,
        T1.ingredients,
        T1.quantities,
        T1.measurement_units,
-       username
+       username,
+       tag_text
        FROM
 (SELECT T1.recipe_id,
        T1.recipe_name,
