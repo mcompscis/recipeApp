@@ -104,6 +104,7 @@ class SearchRecipeAPIView(APIView):
             get_num_recipes_query = file.read()
         with open(search_recipes_query_path, 'r') as file:
             search_recipes_query = file.read()
+            
         offset = (page_num - 1) * limit
         exec1 = exec_query(get_num_recipes_query, 
                            {'recipe_name': recipe_name})
@@ -123,13 +124,28 @@ class GetRecipeReviewsAPIView(APIView):
         page_num = request.query_params.get('page')
         recipe_id = request.query_params.get('recipe_id')
         page_num = int(page_num[:-1] if "/" == page_num[-1] else page_num) if page_num else 1
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_reviews.sql')
-        with open(query_path, 'r') as file:
-            query_text = file.read()
-        offset = (page_num - 1) * limit
+        get_num_reviews_query_path = os.path.join(os.path.dirname(__file__), 
+                                                  'recipe_queries/get_num_total_reviews_for_recipe.sql')
+        get_reviews_query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/get_reviews.sql')
 
-        exec = exec_query(query_text, {'recipe_id': recipe_id, 'offset_val': offset, 'limit_val': limit})
-        return JsonResponse(exec, safe=False)
+        with open(get_num_reviews_query_path, 'r') as file:
+            get_num_reviews_query = file.read()
+
+        with open(get_reviews_query_path, 'r') as file:
+            get_reviews_query = file.read()
+            
+        offset = (page_num - 1) * limit
+        num_reviews = exec_query(get_num_reviews_query, 
+                           {'recipe_id': recipe_id})
+        searched_reviews = exec_query(get_reviews_query, {'recipe_id': recipe_id, 'offset_val': offset, 'limit_val': limit})
+        
+        if (type(searched_reviews) == dict):
+            searched_reviews = [searched_reviews]
+        return JsonResponse({"key_results": searched_reviews,
+                             "num_pages": math.ceil(float(num_reviews["CNT"]/limit)),
+                             "num_results": num_reviews["CNT"]}, safe=False)
+
+        # return JsonResponse(exec, safe=False)
 
 
 class AdvancedSearchAPIView(APIView):
@@ -163,14 +179,15 @@ class AdvancedSearchAPIView(APIView):
             is_cuisine_query_param_null = "N"
         
         if included_ingredients:
-            included_ingr_lst = included_ingredients.split(",")
+            included_ingr_lst = [ingr.replace("%", " ") for ingr in included_ingredients.split(",")]
             is_included_ingr_lst_null = "N"
         
         if excluded_ingredients:
-            excluded_ingr_lst = excluded_ingredients.split(",")
+            excluded_ingr_lst = [ingr.replace("%", " ") for ingr in excluded_ingredients.split(",")]
             is_excluded_ingr_lst_null = "N"
         
         if recipe_name:
+            recipe_name = recipe_name.replace("%", " ")
             is_recipe_name_null = "N"
             
         return self.query_v1(page_num, 
@@ -194,10 +211,24 @@ class AdvancedSearchAPIView(APIView):
         included_ingr_str = " ".join(included_ingr_lst)
         excluded_ingr_str = " ".join(excluded_ingr_lst)
         
-        get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
-                                                  'recipe_queries/get_num_results_from_advanced_search.sql')
-        advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
-                                                       'recipe_queries/advanced_search_query.sql')
+        if is_included_ingr_lst_null is None and is_excluded_ingr_lst_null is None:
+            print("Only considering tags and cuisines")
+            get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                    'recipe_queries/get_num_results_from_search_on_tags_and_cuisine.sql')
+            advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
+                                                        'recipe_queries/search_recipe_by_tags_and_cuisine.sql')
+
+        elif is_tag_query_param_null is None and is_cuisine_query_param_null is None:
+            print("Only considering ingredients")
+            get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                    'recipe_queries/get_num_results_search_by_ingredient.sql')
+            advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
+                                                        'recipe_queries/search_recipe_by_ingredient.sql')
+        else:
+            get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                    'recipe_queries/get_num_results_from_advanced_search.sql')
+            advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
+                                                        'recipe_queries/advanced_search_query.sql')
         with open(get_num_recipes_query_path, 'r') as file:
             get_num_recipes_from_advanced_search_query = file.read()
             
@@ -231,37 +262,96 @@ class AdvancedSearchAPIView(APIView):
         
         searched_results = exec_query(advanced_search_query, 
                                       query_params)
+        
         if (type(searched_results) == dict):
             searched_results = [searched_results]
-        
+                    
         return JsonResponse({"key_results": searched_results,
                              "num_pages": math.ceil(float(num_results["CNT"]/limit)),
                              "num_results": num_results["CNT"]}, safe=False)
 
+    # def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
+    #              is_included_ingr_lst_null, is_excluded_ingr_lst_null,
+    #              tags_str, cuisines_str, is_tag_query_param_null, is_cuisine_query_param_null):
+
+    #     included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)  
+    #     excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
+
+    #     query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query_v2.sql')
+    #     with open(query_path, 'r') as file:
+    #         query_text = file.read()
+            
+    #     query_text = query_text.replace("%(tag_texts)s", tags_str)
+    #     query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
+    #     query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
+    #     query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
+            
+    #     offset = (page_num - 1) * limit
+    #     exec = exec_query(query_text, {
+    #         "is_included_ingr_lst_null": is_included_ingr_lst_null,
+    #         "is_excluded_ingr_lst_null": is_excluded_ingr_lst_null,
+    #         "is_tag_query_param_null": is_tag_query_param_null,
+    #         "is_cuisine_query_param_null": is_cuisine_query_param_null,
+    #         'offset_val': offset, 'limit_val': limit})
+    #     return exec
+
     def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  is_included_ingr_lst_null, is_excluded_ingr_lst_null,
-                 tags_str, cuisines_str, is_tag_query_param_null, is_cuisine_query_param_null):
-
+                 tags_str, cuisines_str, is_tag_query_param_null, 
+                 is_cuisine_query_param_null, recipe_name, is_recipe_name_null):
+        
         included_ingr_str = convert_lst_of_str_to_str_tuple(included_ingr_lst)  
         excluded_ingr_str = convert_lst_of_str_to_str_tuple(excluded_ingr_lst)
+        
+        get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                  'recipe_queries/get_num_results_from_advanced_search_v2.sql')
+        advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
+                                                       'recipe_queries/advanced_search_query_v2.sql')
+        with open(get_num_recipes_query_path, 'r') as file:
+            get_num_recipes_from_advanced_search_query = file.read()
+            
+        with open(advanced_search_query_path, 'r') as file:
+            advanced_search_query = file.read()
+        
+        get_num_recipes_from_advanced_search_query = get_num_recipes_from_advanced_search_query.replace(
+            "%(tag_texts)s", tags_str
+            ).replace("%(cuisine_names)s", cuisines_str).replace(
+                "%(include_ingredients)s", included_ingr_str
+                ).replace("%(exclude_ingredients)s", excluded_ingr_str)
 
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query_v2.sql')
-        with open(query_path, 'r') as file:
-            query_text = file.read()
-            
-        query_text = query_text.replace("%(tag_texts)s", tags_str)
-        query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
-        query_text = query_text.replace("%(include_ingredients)s", included_ingr_str)
-        query_text = query_text.replace("%(exclude_ingredients)s", excluded_ingr_str)
-            
+        advanced_search_query = advanced_search_query.replace(
+            "%(tag_texts)s", tags_str
+            ).replace("%(cuisine_names)s", cuisines_str).replace(
+                "%(include_ingredients)s", included_ingr_str
+                ).replace("%(exclude_ingredients)s", excluded_ingr_str)
+        
+
         offset = (page_num - 1) * limit
-        exec = exec_query(query_text, {
+        query_params = {
             "is_included_ingr_lst_null": is_included_ingr_lst_null,
             "is_excluded_ingr_lst_null": is_excluded_ingr_lst_null,
+            'include_ingredients': included_ingr_str,
+            "exclude_ingredients": excluded_ingr_str,
             "is_tag_query_param_null": is_tag_query_param_null,
             "is_cuisine_query_param_null": is_cuisine_query_param_null,
-            'offset_val': offset, 'limit_val': limit})
-        return exec
+            "recipe_name": recipe_name,
+            "is_recipe_name_null": is_recipe_name_null,
+            'offset_val': offset, 
+            'limit_val': limit
+            }
+
+        num_results = exec_query(get_num_recipes_from_advanced_search_query, 
+                           query_params)
+        
+        searched_results = exec_query(advanced_search_query, 
+                                      query_params)
+        
+        if (type(searched_results) == dict):
+            searched_results = [searched_results]
+                    
+        return JsonResponse({"key_results": searched_results,
+                             "num_pages": math.ceil(float(num_results["CNT"]/limit)),
+                             "num_results": num_results["CNT"]}, safe=False)
 
 
 class GetCuisinesAPIView(APIView):
@@ -339,19 +429,27 @@ class CreateRecipeAPIView(APIView):
 
     def post(self, request):
         print('Create recipe invoked')
+        print(request.data)
         data = json.loads(request.data["data"])
-        uploaded_file = request.FILES["file"]
-        s3_file_name_prefix, s3_file_extension = str(uploaded_file).split(".")
-        s3_file_name_prefix = s3_file_name_prefix + datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
-        s3_file_name = s3_file_name_prefix + f".{s3_file_extension}"
+        uploaded_file = request.FILES
+        print(uploaded_file)
+        
+        if "file" in request.FILES:
+            uploaded_file = request.FILES["file"]
 
-        # Uploading to S3
-        with default_storage.open(s3_file_name, "wb+") as f:
-            for chunk in uploaded_file.chunks():
-                f.write(chunk)
-            
-        s3_url = f"https://{s3_bucket}.s3.amazonaws.com/{s3_file_name}"
-        data["img_url"] = s3_url
+            s3_file_name_prefix, s3_file_extension = str(uploaded_file).split(".")
+            s3_file_name_prefix = s3_file_name_prefix + datetime.now().strftime("%d-%m-%Y-%H:%M:%S")
+            s3_file_name = s3_file_name_prefix + f".{s3_file_extension}"
+
+            # Uploading to S3
+            with default_storage.open(s3_file_name, "wb+") as f:
+                for chunk in uploaded_file.chunks():
+                    f.write(chunk)
+                
+            s3_url = f"https://{s3_bucket}.s3.amazonaws.com/{s3_file_name}"
+            data["img_url"] = s3_url
+        else:
+            data["img_url"] = "https://geniuskitchen.sndimg.com/fdc-new/img/fdc-shareGraphic.png"
 
         #Inserting Ingredients into Ingredient table if not exists
         recipe_name = data["recipe_name"]
