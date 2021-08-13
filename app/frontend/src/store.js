@@ -34,6 +34,3 @@ export const store = createStore(
 
 export const persistor = persistStore(store);
  
-//store.dispatch(loadRecipes(1))
-
-//export default store 

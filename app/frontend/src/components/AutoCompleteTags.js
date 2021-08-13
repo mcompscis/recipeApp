@@ -1,13 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import recipe from '../services/recipe'
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 
 const OPTIONS_LIMIT = 15;

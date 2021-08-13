@@ -1,14 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { makeStyles, fade } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Box from '@material-ui/core/Box';
 import MenuIcon from  '@material-ui/icons/menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import { Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import {logout} from '../reducers/userReducer'
 import SearchBar from './SearchBar'
@@ -54,7 +53,6 @@ const useStyles = makeStyles(theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',

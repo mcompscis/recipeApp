@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 import PreviewCard from './PreviewCard';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux'
@@ -30,7 +30,7 @@ const ResultList = ({recipes}) => {
     <div className={classes.flexbox}>
         {loading ? 
         [...Array(48).keys()].map(idx => 
-          <Skeleton key={idx} className={classes.root} variant="rect" width={261} height={346} />
+          <Skeleton animation="wave" key={idx} className={classes.root} variant="rect" width={261} height={346} />
         )
         :
         recipes.map(recipe =>

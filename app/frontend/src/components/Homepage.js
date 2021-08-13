@@ -9,7 +9,6 @@ import AddRecipeButton from './AddRecipeButton';
 import UploadRecipe from './UploadRecipe';
 import ResultList from './ResultList';
 import { setLoading, setDoneLoading } from '../reducers/loadingReducer';
-import { resetWarningCache } from 'prop-types';
 
 const useStyles = makeStyles({
   flexbox: {

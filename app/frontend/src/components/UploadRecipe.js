@@ -18,7 +18,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import IngredientInput from "./IngredientInput"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-var capitalize = require('capitalize')
 
 const useStyles = makeStyles(theme => ({
   uploadBtn: {
@@ -68,7 +67,6 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
   const [image, setImage] = useState({})
 
   const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const [cuisines, setCuisines] = useState([])
   const [tags, setTags] = useState([])
@@ -105,8 +103,6 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
     setIngredientRows([{}])
     setImage({})
   }
-
-  //TODO: add fields for empty arrays, also len(quantities) == len(measurement) == len(tags)
 
   const handleSave = async() => {
     var bodyFormData = new FormData()
@@ -275,14 +271,10 @@ const UploadRecipe = ({open, onClose, appendRecipeList }) => {
             variant="contained"
             color="primary"
             className={success ? classes.buttonSuccess : null}
-            disabled={loading}
             onClick={() => handleSave()}
           >
             {success ? <CheckIcon /> : "Save"}
           </Button>
-          {loading && (
-            <CircularProgress size={24} className={classes.buttonProgress} />
-          )}
         </div>
       </DialogActions>
       <ToastContainer

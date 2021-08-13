@@ -1,18 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import { makeStyles } from '@material-ui/core/styles';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import recipe from '../services/recipe'
 import AutoCompleteTags from './AutoCompleteTags';
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,29 +15,11 @@ import { setSearchRecipeName,
           setSearchIncludeCuisines,
           setSearchIncludeTags } from '../reducers/searchReducer'
 
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  withoutLabel: {
-    marginTop: theme.spacing(3),
-  },
-  textField: {
-    width: '25ch',
-  },
-}));
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
 const AdvancedSearch = ({open, handleClose, handleClickOpen}) => {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const nameSearched = useSelector(state => state.search.rawname)
   let loading = useSelector(state => state.loading)
