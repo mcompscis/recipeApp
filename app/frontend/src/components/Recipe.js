@@ -26,6 +26,10 @@ const Recipe = () => {
     padding: 0,
   };
 
+  const reviewContainer = {
+    padding: '20px'
+  };
+
 
   const [recipeDetail, setRecipeDetail] = useState({})
   const [tags, setTags] = useState([]);
@@ -60,7 +64,7 @@ const Recipe = () => {
   
   return (
     <MuiThemeProvider>
-      <div>
+      <Container component='main' >
         <Typography variant="h3">{recipeDetail.recipe_name}</Typography>
         <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
         <List style={flexContainer}>
@@ -95,7 +99,7 @@ const Recipe = () => {
         </List>
         <Typography variant="body1" >Cuisine: {recipeDetail.cuisine_name}, Calories: {recipeDetail.calories}, Serves: {recipeDetail.serves}, Time to Prepare: {recipeDetail.time_to_prepare}</Typography>
         {/* <p>Measurement Units: {recipeDetail.measurement_units}</p> */}
-        <Typography variant="body1" >Num Ratings: {recipeDetail.num_ratings}</Typography>
+        <Typography variant="body1" >Num Ratings: {recipeDetail.num_ratings}, Avg Rating: {recipeDetail.avg_rating}</Typography>
         {/* <p>Quantities: {recipeDetail.quantities}</p> */}
 
         <Typography variant="h5" >Reviews and Ratings:</Typography>
@@ -107,7 +111,7 @@ const Recipe = () => {
         <List>
           {reviews.map((review) => {
             return (
-              <div>
+              <div style={reviewContainer}>
                 <Typography variant="body1" >By: {review.username}, Rating: {review.rating}</Typography>
                 <Typography variant="body1" >Review: {review.review}</Typography>
               </div>
@@ -115,7 +119,7 @@ const Recipe = () => {
           })
           }
         </List>
-      </div>
+      </Container>
        
     </MuiThemeProvider>
     
