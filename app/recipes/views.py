@@ -173,35 +173,47 @@ class AdvancedSearchAPIView(APIView):
         if recipe_name:
             is_recipe_name_null = "N"
             
-        return JsonResponse(self.query_v1(page_num, included_ingr_lst, excluded_ingr_lst, 
-                                          is_included_ingr_lst_null, is_excluded_ingr_lst_null,
-                                          tags_str,
-                                          cuisines_str,
-                                          is_tag_query_param_null, is_cuisine_query_param_null, recipe_name,
-                                          is_recipe_name_null), safe=False)
-    
+        return self.query_v1(page_num, 
+                             included_ingr_lst, 
+                             excluded_ingr_lst, 
+                            is_included_ingr_lst_null, 
+                            is_excluded_ingr_lst_null,
+                            tags_str,
+                            cuisines_str,
+                            is_tag_query_param_null, 
+                            is_cuisine_query_param_null, 
+                            recipe_name,
+                            is_recipe_name_null)
     
 
     def query_v1(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  is_included_ingr_lst_null, is_excluded_ingr_lst_null,
-                 tags_str, cuisines_str, is_tag_query_param_null, is_cuisine_query_param_null, recipe_name,
-                 is_recipe_name_null):
+                 tags_str, cuisines_str, is_tag_query_param_null, 
+                 is_cuisine_query_param_null, recipe_name, is_recipe_name_null):
         
         included_ingr_str = " ".join(included_ingr_lst)
         excluded_ingr_str = " ".join(excluded_ingr_lst)
         
+        get_num_recipes_query_path = os.path.join(os.path.dirname(__file__), 
+                                                  'recipe_queries/get_num_results_from_advanced_search.sql')
+        advanced_search_query_path = os.path.join(os.path.dirname(__file__), 
+                                                       'recipe_queries/advanced_search_query.sql')
+        with open(get_num_recipes_query_path, 'r') as file:
+            get_num_recipes_from_advanced_search_query = file.read()
+            
+        with open(advanced_search_query_path, 'r') as file:
+            advanced_search_query = file.read()
         
+        get_num_recipes_from_advanced_search_query = get_num_recipes_from_advanced_search_query.replace(
+            "%(tag_texts)s", tags_str
+            ).replace("%(cuisine_names)s", cuisines_str)
 
-        query_path = os.path.join(os.path.dirname(__file__), 'recipe_queries/advanced_search_query.sql')
-        with open(query_path, 'r') as file:
-            query_text = file.read()
-            
-        query_text = query_text.replace("%(tag_texts)s", tags_str)
-        query_text = query_text.replace("%(cuisine_names)s", cuisines_str)
+        advanced_search_query = advanced_search_query.replace(
+            "%(tag_texts)s", tags_str
+            ).replace("%(cuisine_names)s", cuisines_str)
 
-            
         offset = (page_num - 1) * limit
-        exec = exec_query(query_text, {
+        query_params = {
             "is_included_ingr_lst_null": is_included_ingr_lst_null,
             "is_excluded_ingr_lst_null": is_excluded_ingr_lst_null,
             'include_ingredients': included_ingr_str,
@@ -210,9 +222,21 @@ class AdvancedSearchAPIView(APIView):
             "is_cuisine_query_param_null": is_cuisine_query_param_null,
             "recipe_name": recipe_name,
             "is_recipe_name_null": is_recipe_name_null,
-            'offset_val': offset, 'limit_val': limit})
-        return exec
+            'offset_val': offset, 
+            'limit_val': limit
+            }
 
+        num_results = exec_query(get_num_recipes_from_advanced_search_query, 
+                           query_params)
+        
+        searched_results = exec_query(advanced_search_query, 
+                                      query_params)
+        if (type(searched_results) == dict):
+            searched_results = [searched_results]
+        
+        return JsonResponse({"key_results": searched_results,
+                             "num_pages": math.ceil(float(num_results["CNT"]/limit)),
+                             "num_results": num_results["CNT"]}, safe=False)
 
     def query_v2(self, page_num, included_ingr_lst, excluded_ingr_lst, 
                  is_included_ingr_lst_null, is_excluded_ingr_lst_null,
