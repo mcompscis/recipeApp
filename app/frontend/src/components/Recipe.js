@@ -18,9 +18,32 @@ import {
 } from "react-router-dom"
 import { Chip, List, ListItem } from 'material-ui';
 import { MuiThemeProvider } from 'material-ui/styles';
-import { Button, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Typography } from '@material-ui/core';
+import { Button, Table, TableBody, TableContainer, TableHead, TableRow, TableCell, Typography, Paper} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    listStyle: 'none',
+    padding: theme.spacing(0.5),
+    margin: 0,
+  },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
+}));
 
 const Recipe = () => {
+
+  const classes = useStyles();
+  const handleDelete = () => {
+    console.info('You clicked the delete icon.');
+  };
+
+  const handleClick = () => {
+    console.info('You clicked the Chip.');
+  };
 
   const flexContainer = {
     display: 'flex',
@@ -37,6 +60,7 @@ const Recipe = () => {
 
   const [recipeDetail, setRecipeDetail] = useState({})
   const [tags, setTags] = useState([]);
+  const [indexedTags, setIndexedTags] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [measure, setMeasure] = useState([]);
@@ -54,11 +78,12 @@ const Recipe = () => {
       let ingredientsArr = recipe.ingredients.split(',');
       let measure = recipe.measurement_units.split(',');
       let quantities = recipe.quantities.split(',');
-      setTags(tagsArr);
+      
       setInstructions(instArr);
       setIngredients(ingredientsArr);
       setMeasure(measure);
       setQuantities(quantities);
+      setTags(tagsArr);
     });
 
     recipe.getReviews(id).then(res => {
@@ -66,6 +91,23 @@ const Recipe = () => {
       console.log(res.key_results);
     })
   }, [])
+
+  useEffect(() => {
+    if (tags !== null) {
+      let tagArr = [];
+      let tagLen = tags.length;
+
+      for (let i = 0; i < tagLen; ++i) {
+        let obj = {
+          "key": i,
+          "tag_name": tags[i]
+        }
+        tagArr.push(obj);
+      }
+      console.log(tagArr);
+      setIndexedTags(tagArr);
+    }
+  }, [tags])
 
   useEffect(() => {
     if (ingredients !== null && measure !== null && quantities !== null) {
@@ -96,7 +138,18 @@ const Recipe = () => {
             onClose={() => setReviewCreate(false)}
             id={id}
           />
-        <Typography variant="body1">Author: {recipeDetail.username}, Date submitted: {recipeDetail.date_submitted}</Typography>
+        <Typography variant="body1"><strong>Author: {recipeDetail.username}</strong></Typography>
+        <Typography variant="body1">Date submitted: {recipeDetail.date_submitted}</Typography>
+        {/* <Paper component="ul" className={classes.root}>
+          {indexedTags.map((data) => {
+            return (
+              <li key={data.key}>
+                <Chip label={data.tag_name} className={classes.chip} />
+              </li>
+            );
+          })}
+        </Paper> */}
+        <Typography variant="h5" >Tags:</Typography>
         <List style={flexContainer}>
           {tags.map((tag) => {
             return <ListItem button="true">{tag}</ListItem>;
